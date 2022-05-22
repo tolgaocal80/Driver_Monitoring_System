@@ -15,6 +15,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   salomon_bottom_bar: ^3.3.1
   google_maps_flutter: ^2.1.5
+  google_maps_flutter_web: ^0.3.3
+  geolocator: ^8.2.1
+  geocoding: ^2.0.4
+  lottie: ^1.3.0
+
 
 dev_dependencies:
   flutter_test:
@@ -25,3 +30,9 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - lib/assets/animations/go-to-my-location-button.json
+    - lib/assets/animations/map-type-button.json
+    - lib/assets/animations/
+

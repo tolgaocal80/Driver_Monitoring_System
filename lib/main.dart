@@ -1,5 +1,5 @@
 
-import 'package:driver_monitoring_system/MapScreen.dart';
+import 'package:driver_monitoring_system/mapFiles/MapScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
