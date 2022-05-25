@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "753078486224",
+    "project_id": "ytu-surucu-destek-sistemi",
+    "storage_bucket": "ytu-surucu-destek-sistemi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:753078486224:android:843438aad452290f9ecad5",
+        "android_client_info": {
+          "package_name": "com.ytu.driver_monitoring_system"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "753078486224-qoen1emn4itvctum5b6gkviib61ldo0i.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ytu.driver_monitoring_system",
+            "certificate_hash": "394b057bbbb3a28c16f72e84570b048ff618dc00"
+          }
+        },
+        {
+          "client_id": "753078486224-l8ir17b941868d3qagkjv83gjc055to9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3neKBne_C8r7n-zpeX61rJEEnYym9BTQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "753078486224-l8ir17b941868d3qagkjv83gjc055to9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
