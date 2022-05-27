@@ -1,3 +1,4 @@
+import 'package:driver_monitoring_system/speedometer/speed_screen.dart';
 import 'package:driver_monitoring_system/weather/common/date_formatter.dart';
 import 'package:driver_monitoring_system/weather/weather_data/forecast.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather.dart';
@@ -50,6 +51,12 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
     String cityName = weather.name; //city name
 
+    const TextStyle _annotationTextStyle = TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: Colors.white,
+    );
+
     int currTemp = weather.temperature.toInt(); // current temperature
     int maxTemp = weather.maxTemperature.toInt(); // today max temperature
     int minTemp = weather.minTemperature.toInt(); // today min temperature
@@ -71,319 +78,405 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: size.width * 0.05,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          color: isDarkMode
-                              ? Colors.white.withOpacity(0.05)
-                              : Colors.black.withOpacity(0.05),
-                        ),
-                        child: Column(
-
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: size.height * 0.01,
-                                  left: size.width * 0.03,
-                                ),
-                                child: Text(
-                                  'Son Konum :',
-                                  style: GoogleFonts.questrial(
-                                    color: isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontSize: size.height * 0.025,
-                                    fontWeight: FontWeight.bold,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: size.width * 0.008, vertical: size.width * 0.008,),
+                          child: Column(
+                            children: [
+                              Container(
+                                width: size.width * 0.46,
+                                height: size.width * 0.3,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
                                   ),
+                                  color: isDarkMode
+                                      ? Colors.white.withOpacity(0.05)
+                                      : Colors.black.withOpacity(0.075),
                                 ),
-                              ),
-                            ),
-                            Divider(
-                              color: isDarkMode ? Colors.white : Colors.black,
-                            ),
-                            locationAddress == "" ? const SpinKitFadingFour(color: Colors.black, size: 30,) : Text(locationAddress, style: GoogleFonts.questrial(
-                                color: isDarkMode ? Colors.white : Colors.black,
-                                fontSize: size.height * 0.02,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: size.height * 0.03,
-                      ),
-                      child: Align(
-                        child: Text(
-                          cityName,
-                          style: GoogleFonts.questrial(
-                            color: isDarkMode ? Colors.white : Colors.black,
-                            fontSize: size.height * 0.06,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: size.height * 0.005,
-                      ),
-                      child: Align(
-                        child: Text(
-                          'Bugün', //day
-                          style: GoogleFonts.questrial(
-                            color:
-                            isDarkMode ? Colors.white54 : Colors.black54,
-                            fontSize: size.height * 0.035,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: size.height * 0.03,
-                      ),
-                      child: Align(
-                        child: Text(
-                          '$currTemp˚C', //curent temperature
-                          style: GoogleFonts.questrial(
-                            color: currTemp <= 0
-                                ? Colors.blue
-                                : currTemp > 0 && currTemp <= 15
-                                ? Colors.indigo
-                                : currTemp > 15 && currTemp < 30
-                                ? Colors.deepPurple
-                                : Colors.pink,
-                            fontSize: size.height * 0.13,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding:
-                      EdgeInsets.symmetric(horizontal: size.width * 0.25),
-                      child: Divider(
-                        color: isDarkMode ? Colors.white : Colors.black,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: size.height * 0.005,
-                      ),
-                      child: Align(
-                        child: Text(
-                          weather.description, // weather
-                          style: GoogleFonts.questrial(
-                            color:
-                            isDarkMode ? Colors.white54 : Colors.black54,
-                            fontSize: size.height * 0.03,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        top: size.height * 0.03,
-                        bottom: size.height * 0.01,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            '$minTemp˚C', // min temperature
-                            style: GoogleFonts.questrial(
-                              color: minTemp <= 0
-                                  ? Colors.blue
-                                  : minTemp > 0 && minTemp <= 15
-                                  ? Colors.indigo
-                                  : minTemp > 15 && minTemp < 30
-                                  ? Colors.deepPurple
-                                  : Colors.pink,
-                              fontSize: size.height * 0.03,
-                            ),
-                          ),
-                          Text(
-                            '/',
-                            style: GoogleFonts.questrial(
-                              color: isDarkMode
-                                  ? Colors.white54
-                                  : Colors.black54,
-                              fontSize: size.height * 0.03,
-                            ),
-                          ),
-                          Text(
-                            '$maxTemp˚C', //max temperature
-                            style: GoogleFonts.questrial(
-                              color: maxTemp <= 0
-                                  ? Colors.blue
-                                  : maxTemp > 0 && maxTemp <= 15
-                                  ? Colors.indigo
-                                  : maxTemp > 15 && maxTemp < 30
-                                  ? Colors.deepPurple
-                                  : Colors.pink,
-                              fontSize: size.height * 0.03,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: size.width * 0.05,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          color: isDarkMode
-                              ? Colors.white.withOpacity(0.05)
-                              : Colors.black.withOpacity(0.05),
-                        ),
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  top: size.height * 0.01,
-                                  left: size.width * 0.03,
-                                ),
-                                child: Text(
-                                  'Bugün için tahminler',
-                                  style: GoogleFonts.questrial(
-                                    color: isDarkMode
-                                        ? Colors.white
-                                        : Colors.black,
-                                    fontSize: size.height * 0.025,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.all(size.width * 0.005),
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                    children: [
-                                      buildForecastToday(
-                                          weather.dateTime.hour.toString()+":"+weather.dateTime.minute.toString(),
-                                          weather.temperature.toInt(),
-                                          weather.windSpeed.toInt(),
-                                          weather.humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + weather.icon.toString() +".png",
-                                          size,
-                                          isDarkMode
+                                child: Column(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                          top: size.height * 0.01,
+                                          left: size.width * 0.03,
+                                        ),
+                                        child: Text(
+                                          'Son Konum :',
+                                          style: GoogleFonts.questrial(
+                                            color: isDarkMode
+                                                ? Colors.white
+                                                : Colors.black,
+                                            fontSize: size.height * 0.025,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
-                                      forecast.predictions[0].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[0].dateTime.hour.toString()+":"+forecast.predictions[0].dateTime.minute.toString(),
-                                          forecast.predictions[0].temperature.toInt(),
-                                          forecast.predictions[0].windSpeed.toInt(),
-                                          forecast.predictions[0].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[0].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-                                      forecast.predictions[1].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[1].dateTime.hour.toString()+":"+forecast.predictions[1].dateTime.minute.toString(),
-                                          forecast.predictions[1].temperature.toInt(),
-                                          forecast.predictions[1].windSpeed.toInt(),
-                                          forecast.predictions[1].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[1].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-                                      forecast.predictions[2].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[2].dateTime.hour.toString()+":"+forecast.predictions[2].dateTime.minute.toString(),
-                                          forecast.predictions[2].temperature.toInt(),
-                                          forecast.predictions[2].windSpeed.toInt(),
-                                          forecast.predictions[2].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[2].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-                                      forecast.predictions[3].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[3].dateTime.hour.toString()+":"+forecast.predictions[3].dateTime.minute.toString(),
-                                          forecast.predictions[3].temperature.toInt(),
-                                          forecast.predictions[3].windSpeed.toInt(),
-                                          forecast.predictions[3].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[3].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-                                      forecast.predictions[4].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[4].dateTime.hour.toString()+":"+forecast.predictions[4].dateTime.minute.toString(),
-                                          forecast.predictions[4].temperature.toInt(),
-                                          forecast.predictions[4].windSpeed.toInt(),
-                                          forecast.predictions[4].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[4].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-                                      forecast.predictions[5].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[5].dateTime.hour.toString()+":"+forecast.predictions[5].dateTime.minute.toString(),
-                                          forecast.predictions[5].temperature.toInt(),
-                                          forecast.predictions[5].windSpeed.toInt(),
-                                          forecast.predictions[5].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[5].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-                                      forecast.predictions[6].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[6].dateTime.hour.toString()+":"+forecast.predictions[6].dateTime.minute.toString(),
-                                          forecast.predictions[6].temperature.toInt(),
-                                          forecast.predictions[6].windSpeed.toInt(),
-                                          forecast.predictions[6].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[6].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-                                      forecast.predictions[7].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[7].dateTime.hour.toString()+":"+forecast.predictions[7].dateTime.minute.toString(),
-                                          forecast.predictions[7].temperature.toInt(),
-                                          forecast.predictions[7].windSpeed.toInt(),
-                                          forecast.predictions[7].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[7].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-                                      forecast.predictions[8].dateTime.day.compareTo(DateTime.now().day) == 0 ?
-                                      buildForecastToday(
-                                          forecast.predictions[8].dateTime.hour.toString()+":"+forecast.predictions[8].dateTime.minute.toString(),
-                                          forecast.predictions[8].temperature.toInt(),
-                                          forecast.predictions[8].windSpeed.toInt(),
-                                          forecast.predictions[8].humidity.toInt(),
-                                          "http://openweathermap.org/img/wn/" + forecast.predictions[8].icon +".png",
-                                          size,
-                                          isDarkMode
-                                      ) : Container(),
-
-                                    ]
+                                    ),
+                                    Divider(
+                                      color: isDarkMode ? Colors.white : Colors.black,
+                                    ),
+                                    locationAddress == "" ? const SpinKitFadingFour(color: Colors.black, size: 30,) : Text(locationAddress, style: GoogleFonts.questrial(
+                                      color: isDarkMode ? Colors.white : Colors.black,
+                                      fontSize: size.height * 0.02,
+                                    ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
+
+                              const SizedBox(
+                                height: 2,
+                              ),
+
+                              Container(
+                                width: size.width * 0.46,
+                                height: size.width * 0.59,
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                    Radius.circular(10),
+                                  ),
+                                  color: isDarkMode
+                                      ? Colors.white.withOpacity(0.05)
+                                      : Colors.black.withOpacity(0.075),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 10,
+                                      ),
+                                      child: Align(
+                                        child: Text(
+                                          cityName,
+                                          style: GoogleFonts.questrial(
+                                            color: isDarkMode ? Colors.white : Colors.black,
+                                            fontSize: size.height * 0.045,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 2,
+                                      ),
+                                      child: Align(
+                                        child: Text(
+                                          'Bugün', //day
+                                          style: GoogleFonts.questrial(
+                                            color:
+                                            isDarkMode ? Colors.white54 : Colors.black54,
+                                            fontSize: size.height * 0.035,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 4,
+                                      ),
+                                      child: Align(
+                                        child: Text(
+                                          '$currTemp˚C', //curent temperature
+                                          style: GoogleFonts.questrial(
+                                            color: currTemp <= 0
+                                                ? Colors.blue
+                                                : currTemp > 0 && currTemp <= 15
+                                                ? Colors.indigo
+                                                : currTemp > 15 && currTemp < 30
+                                                ? Colors.deepPurple
+                                                : Colors.pink,
+                                            fontSize: size.height * 0.1,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Divider(
+                                      color: isDarkMode ? Colors.white : Colors.black,
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 2,
+                                      ),
+                                      child: Align(
+                                        child: Text(
+                                          weather.description.replaceFirst(weather.description.characters.first, weather.description.characters.first.toUpperCase()), // weather
+                                          style: GoogleFonts.questrial(
+                                            color:
+                                            isDarkMode ? Colors.white54 : Colors.black54,
+                                            fontSize: size.height * 0.03,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: size.height * 0.01,
+                                        bottom: size.height * 0.01,
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            '$minTemp˚C', // min temperature
+                                            style: GoogleFonts.questrial(
+                                              color: minTemp <= 0
+                                                  ? Colors.blue
+                                                  : minTemp > 0 && minTemp <= 15
+                                                  ? Colors.indigo
+                                                  : minTemp > 15 && minTemp < 30
+                                                  ? Colors.deepPurple
+                                                  : Colors.pink,
+                                              fontSize: size.height * 0.03,
+                                            ),
+                                          ),
+                                          Text(
+                                            '/',
+                                            style: GoogleFonts.questrial(
+                                              color: isDarkMode
+                                                  ? Colors.white54
+                                                  : Colors.black54,
+                                              fontSize: size.height * 0.03,
+                                            ),
+                                          ),
+                                          Text(
+                                            '$maxTemp˚C', //max temperature
+                                            style: GoogleFonts.questrial(
+                                              color: maxTemp <= 0
+                                                  ? Colors.blue
+                                                  : maxTemp > 0 && maxTemp <= 15
+                                                  ? Colors.indigo
+                                                  : maxTemp > 15 && maxTemp < 30
+                                                  ? Colors.deepPurple
+                                                  : Colors.pink,
+                                              fontSize: size.height * 0.03,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                            ],
+                          ),
                         ),
-                      ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: size.width * 0.008, vertical: size.width * 0.008,),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              SpeedScreen(),
+                              Container(
+                                  padding: EdgeInsets.symmetric(horizontal: size.width * 0.01, vertical: size.width*0.01),
+                                  margin: EdgeInsets.symmetric(vertical: size.width*0.003),
+                                  width: size.width * 0.5,
+                                  height: size.width * 0.3,
+                                  alignment: Alignment.centerLeft,
+                                  decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.all(Radius.circular(20))
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text("Azami Hız : ", style: _annotationTextStyle),
+                                      Divider(
+                                        color: Colors.white,
+                                      ),
+                                      Text("150" + " km/h", style: _annotationTextStyle),
+                                    ],
+                                  )
+                              ),
+                            ],
+                          )
+                        ),
+                      ]
                     ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: size.width * 0.008,),
+                          child: Container(
+                            width: size.width * 0.55,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: isDarkMode
+                                  ? Colors.white.withOpacity(0.05)
+                                  : Colors.black.withOpacity(0.075),
+                            ),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(
+                                      top: size.height * 0.01,
+                                      left: size.width * 0.03,
+                                    ),
+                                    child: Text(
+                                      'Bugün için tahminler',
+                                      style: GoogleFonts.questrial(
+                                        color: isDarkMode
+                                            ? Colors.white
+                                            : Colors.black,
+                                        fontSize: size.height * 0.025,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(size.width * 0.005),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                        children: [
+                                          buildForecastToday(
+                                              weather.dateTime.hour.toString()+":"+weather.dateTime.minute.toString(),
+                                              weather.temperature.toInt(),
+                                              weather.windSpeed.toInt(),
+                                              weather.humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + weather.icon.toString() +".png",
+                                              size,
+                                              isDarkMode
+                                          ),
+                                          forecast.predictions[0].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[0].dateTime.hour.toString()+":"+forecast.predictions[0].dateTime.minute.toString(),
+                                              forecast.predictions[0].temperature.toInt(),
+                                              forecast.predictions[0].windSpeed.toInt(),
+                                              forecast.predictions[0].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[0].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+                                          forecast.predictions[1].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[1].dateTime.hour.toString()+":"+forecast.predictions[1].dateTime.minute.toString(),
+                                              forecast.predictions[1].temperature.toInt(),
+                                              forecast.predictions[1].windSpeed.toInt(),
+                                              forecast.predictions[1].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[1].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+                                          forecast.predictions[2].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[2].dateTime.hour.toString()+":"+forecast.predictions[2].dateTime.minute.toString(),
+                                              forecast.predictions[2].temperature.toInt(),
+                                              forecast.predictions[2].windSpeed.toInt(),
+                                              forecast.predictions[2].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[2].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+                                          forecast.predictions[3].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[3].dateTime.hour.toString()+":"+forecast.predictions[3].dateTime.minute.toString(),
+                                              forecast.predictions[3].temperature.toInt(),
+                                              forecast.predictions[3].windSpeed.toInt(),
+                                              forecast.predictions[3].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[3].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+                                          forecast.predictions[4].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[4].dateTime.hour.toString()+":"+forecast.predictions[4].dateTime.minute.toString(),
+                                              forecast.predictions[4].temperature.toInt(),
+                                              forecast.predictions[4].windSpeed.toInt(),
+                                              forecast.predictions[4].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[4].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+                                          forecast.predictions[5].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[5].dateTime.hour.toString()+":"+forecast.predictions[5].dateTime.minute.toString(),
+                                              forecast.predictions[5].temperature.toInt(),
+                                              forecast.predictions[5].windSpeed.toInt(),
+                                              forecast.predictions[5].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[5].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+                                          forecast.predictions[6].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[6].dateTime.hour.toString()+":"+forecast.predictions[6].dateTime.minute.toString(),
+                                              forecast.predictions[6].temperature.toInt(),
+                                              forecast.predictions[6].windSpeed.toInt(),
+                                              forecast.predictions[6].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[6].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+                                          forecast.predictions[7].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[7].dateTime.hour.toString()+":"+forecast.predictions[7].dateTime.minute.toString(),
+                                              forecast.predictions[7].temperature.toInt(),
+                                              forecast.predictions[7].windSpeed.toInt(),
+                                              forecast.predictions[7].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[7].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+                                          forecast.predictions[8].dateTime.day.compareTo(DateTime.now().day) == 0 ?
+                                          buildForecastToday(
+                                              forecast.predictions[8].dateTime.hour.toString()+":"+forecast.predictions[8].dateTime.minute.toString(),
+                                              forecast.predictions[8].temperature.toInt(),
+                                              forecast.predictions[8].windSpeed.toInt(),
+                                              forecast.predictions[8].humidity.toInt(),
+                                              "http://openweathermap.org/img/wn/" + forecast.predictions[8].icon +".png",
+                                              size,
+                                              isDarkMode
+                                          ) : Container(),
+
+                                        ]
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: size.width * 0.008,),
+                          child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: size.width * 0.01, vertical: size.width*0.01),
+                              margin: EdgeInsets.symmetric(vertical: size.width*0.003),
+                              width: size.width * 0.4,
+                              height: size.width * 0.3,
+                              alignment: Alignment.centerLeft,
+                              decoration: const BoxDecoration(
+                                  color: Colors.black,
+                                  borderRadius: BorderRadius.all(Radius.circular(20))
+                              ),
+                              child: Column(
+                                children: [
+                                  Text("Şerit İhlali", style: _annotationTextStyle),
+                                  Divider(
+                                    color: Colors.white,
+                                  ),
+                                  Text("150" + " km/h", style: _annotationTextStyle),
+                                ],
+                              )
+                          ),
+                        ),
+                        
+                      ],
+                    ),
+
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: size.width * 0.05,
