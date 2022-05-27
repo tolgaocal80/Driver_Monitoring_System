@@ -30,6 +30,7 @@ dependencies:
   flutter_tts: ^3.3.3
   syncfusion_flutter_gauges: ^20.1.57
   numberpicker: ^2.1.1
+  firebase_database: ^9.0.15
 
 dev_dependencies:
   flutter_test:

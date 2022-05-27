@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -6,6 +8,8 @@ import 'map_widget.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:lottie/lottie.dart' as lot;
+import 'package:firebase_database/firebase_database.dart';
+
 
 MapWidget getMapWidget() => MobileMap();
 
@@ -34,15 +38,27 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
 
   // Assign Map Controller
   void _onMapCreated(GoogleMapController gController) {
-    showPinsOnMap();
     mapController = gController;
     checkGPSPermission();
   }
+
+  final DatabaseReference ref = FirebaseDatabase.instanceFor(app: Firebase.app(),databaseURL: "https://ytu-surucu-destek-sistemi-default-rtdb.europe-west1.firebasedatabase.app").ref();
 
   getCurrentLocationFromPosition() async {
     position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high) ;
     return LatLng(position.latitude, position.longitude);
   }
+
+  void saveData() async{
+    await ref.child('users').push().set({
+      "name": "John",
+      "age": 18,
+      "address": {
+        "line1": "100 Mountain View"
+      }
+    });
+  }
+
 
   @override
   void initState() {
@@ -50,8 +66,9 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     _changeMapTypeAnimationController = AnimationController(vsync: this)..value = 0;
     _getMyLocationAnimationController = AnimationController(vsync: this)..value = 0;
     _getCarLocationAnimationController = AnimationController(vsync: this)..value = 0;
-
   }
+
+  String userId = FirebaseAuth.instance.currentUser!.uid;
 
   // Changes map apperance type
   void _setMapType() {
@@ -88,7 +105,6 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
             compassEnabled: false,
             zoomControlsEnabled: false,
             tiltGesturesEnabled: false,
-      //      markers: singleton.getMarkers,
             mapType: _currentMapType,
             mapToolbarEnabled: false,
             myLocationButtonEnabled: false,
@@ -126,6 +142,7 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
                       backgroundColor: _mapButtonsColor,
                       onPressed: () {
                         _setMapType();
+                        saveData();
                       },
                     ),
                   ),
@@ -191,14 +208,6 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
       ],
     );
 
-  }
-
-
-  /// Initializes all Markers from reportList to the map.
-  void showPinsOnMap() {
-    setState(() {
-      // Create markers for each element in the reportList
-    });
   }
 
   checkGPSPermission() async {

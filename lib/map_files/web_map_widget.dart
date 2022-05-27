@@ -1,9 +1,9 @@
 import 'dart:html';
 import 'dart:ui' as ui;
-import 'package:driver_monitoring_system/mapFiles/map_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps/google_maps.dart';
 import 'package:flutter/src/widgets/basic.dart'  as basic;
+import 'map_constants.dart';
 import 'map_widget.dart';
 
 MapWidget getMapWidget() => WebMap();

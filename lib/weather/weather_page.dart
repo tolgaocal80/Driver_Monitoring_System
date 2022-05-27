@@ -1,15 +1,16 @@
+import 'package:driver_monitoring_system/lane/lane_violation.dart';
 import 'package:driver_monitoring_system/speedometer/speed_screen.dart';
 import 'package:driver_monitoring_system/weather/common/date_formatter.dart';
 import 'package:driver_monitoring_system/weather/weather_data/forecast.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather_result.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 
 class WeatherHomePage extends StatefulWidget {
    WeatherHomePage( {Key? key, required this.weatherResult}) : super(key: key);
@@ -129,11 +130,9 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                   ],
                                 ),
                               ),
-
                               const SizedBox(
                                 height: 2,
                               ),
-
                               Container(
                                 width: size.width * 0.46,
                                 height: size.width * 0.59,
@@ -264,7 +263,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                   ],
                                 ),
                               ),
-
                             ],
                           ),
                         ),
@@ -450,30 +448,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: size.width * 0.008,),
-                          child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: size.width * 0.01, vertical: size.width*0.01),
-                              margin: EdgeInsets.symmetric(vertical: size.width*0.003),
-                              width: size.width * 0.4,
-                              height: size.width * 0.3,
-                              alignment: Alignment.centerLeft,
-                              decoration: const BoxDecoration(
-                                  color: Colors.black,
-                                  borderRadius: BorderRadius.all(Radius.circular(20))
-                              ),
-                              child: Column(
-                                children: [
-                                  Text("Şerit İhlali", style: _annotationTextStyle),
-                                  Divider(
-                                    color: Colors.white,
-                                  ),
-                                  Text("150" + " km/h", style: _annotationTextStyle),
-                                ],
-                              )
-                          ),
-                        ),
-                        
+                        LaneViolation()
+
                       ],
                     ),
 
@@ -656,6 +632,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
 
   Widget buildSevenDayForecast(String time, int minTemp, int maxTemp,
       String weatherIcon, size, bool isDarkMode) {
+
+
     return Padding(
       padding: EdgeInsets.all(
         size.height * 0.005,

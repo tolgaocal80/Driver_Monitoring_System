@@ -19,7 +19,7 @@ class _SpeedScreenState extends State<SpeedScreen> {
       padding: EdgeInsets.zero,
       margin: EdgeInsets.zero,
       child: DashScreen(unit: currentSelectedUnit),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.all(Radius.circular(20))
       ),

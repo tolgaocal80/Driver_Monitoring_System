@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "753078486224",
+    "firebase_url": "https://ytu-surucu-destek-sistemi-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "ytu-surucu-destek-sistemi",
     "storage_bucket": "ytu-surucu-destek-sistemi.appspot.com"
   },

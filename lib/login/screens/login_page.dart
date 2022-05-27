@@ -1,12 +1,9 @@
 import 'package:driver_monitoring_system/login/screens/register_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../utils/fire_auth.dart';
 import '../utils/validator.dart';
 import '../../home_page.dart';
-import 'package:lottie/lottie.dart' as lot;
-
 
 class LoginPage extends StatefulWidget{
   @override
@@ -30,36 +27,20 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
   void initState() {
     super.initState();
     loginAnimationController = AnimationController(vsync: this)..value = 0;
-
   }
 
-  Future<FirebaseApp> _initializeFirebase() async {
-    FirebaseApp firebaseApp = await Firebase.initializeApp();
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) =>  MyHomePage(user),
-        ),
-      );
-    }
-    return firebaseApp;
-  }
+
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: () {
         _focusEmail.unfocus();
         _focusPassword.unfocus();
       },
       child: Scaffold(
-
-        body: FutureBuilder(
-          future: _initializeFirebase(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              return Padding(
+          body: Padding(
                 padding: const EdgeInsets.only(left: 24.0, right: 24.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -186,16 +167,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
                     )
                   ],
                 ),
-              );
-            }
-
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          },
-        ),
+              )
       ),
     );
+
+
   }
 }
 

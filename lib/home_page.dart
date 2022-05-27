@@ -1,10 +1,9 @@
-import 'package:driver_monitoring_system/speedometer/speed_screen.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather_builder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
-import 'mapFiles/map_screen.dart';
+import 'map_files/map_screen.dart';
 import 'weather/weather_data/weather_use_case.dart';
 import 'weather/weather_widgets/current_weather_widget.dart';
 
@@ -128,7 +127,9 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             MapScreen(),
             CurrentWeatherPage(weatherUseCase: useCase,),
-            SpeedScreen()
+            Center(
+              child: Text(" Kamera ekranı"),
+            )
           ],
         ),
       ),
