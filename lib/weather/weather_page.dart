@@ -3,8 +3,12 @@ import 'package:driver_monitoring_system/weather/weather_data/forecast.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather_result.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 
 class WeatherHomePage extends StatefulWidget {
    WeatherHomePage( {Key? key, required this.weatherResult}) : super(key: key);
@@ -17,9 +21,25 @@ class WeatherHomePage extends StatefulWidget {
 
 class _WeatherHomePageState extends State<WeatherHomePage> {
 
+  GeolocatorPlatform geolocator= GeolocatorPlatform.instance;
+  late Position currentPosition;
+  late String locationAddress = "";
+  late List<Placemark> placemark;
+
   @override
   void initState() {
     super.initState();
+    geolocator.getPositionStream(locationSettings: const LocationSettings(timeLimit: Duration(seconds: 10)))
+        .listen((position) async {
+          currentPosition = position;
+          placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
+          Placemark place = placemark[0];
+          setState(() {
+            locationAddress = "${place.thoroughfare}, ${place.subLocality}\n"
+                "${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
+          });
+    },
+    );
   }
 
   @override
@@ -51,6 +71,53 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: size.width * 0.05,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          color: isDarkMode
+                              ? Colors.white.withOpacity(0.05)
+                              : Colors.black.withOpacity(0.05),
+                        ),
+                        child: Column(
+
+                          children: [
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  top: size.height * 0.01,
+                                  left: size.width * 0.03,
+                                ),
+                                child: Text(
+                                  'Son Konum :',
+                                  style: GoogleFonts.questrial(
+                                    color: isDarkMode
+                                        ? Colors.white
+                                        : Colors.black,
+                                    fontSize: size.height * 0.025,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Divider(
+                              color: isDarkMode ? Colors.white : Colors.black,
+                            ),
+                            locationAddress == "" ? const SpinKitFadingFour(color: Colors.black, size: 30,) : Text(locationAddress, style: GoogleFonts.questrial(
+                                color: isDarkMode ? Colors.white : Colors.black,
+                                fontSize: size.height * 0.02,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     Padding(
                       padding: EdgeInsets.only(
                         top: size.height * 0.03,

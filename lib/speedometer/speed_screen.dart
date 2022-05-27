@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dash_screen.dart';
 
-class SpeedometerApp extends StatefulWidget {
-  const SpeedometerApp({Key? key}) : super(key: key);
+class SpeedScreen extends StatefulWidget {
+  const SpeedScreen({Key? key}) : super(key: key);
 
   @override
-  _SpeedometerAppState createState() => _SpeedometerAppState();
+  _SpeedScreenState createState() => _SpeedScreenState();
 }
 
-class _SpeedometerAppState extends State<SpeedometerApp> {
+class _SpeedScreenState extends State<SpeedScreen> {
 
   String currentSelectedUnit = 'km/h';
 
@@ -16,10 +16,12 @@ class _SpeedometerAppState extends State<SpeedometerApp> {
   Widget build(BuildContext context) {
 
     return Container(
+      padding: EdgeInsets.zero,
+      margin: EdgeInsets.zero,
       child: DashScreen(unit: currentSelectedUnit),
       decoration: BoxDecoration(
         color: Colors.black,
-        borderRadius: BorderRadius.all(Radius.circular(30))
+        borderRadius: BorderRadius.all(Radius.circular(20))
       ),
     );
   }

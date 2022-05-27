@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-/// The central speedometer made using Syncfusion gauge package, that shows current speed
-///
-/// Also shows highest speed so far since app was opened
+// The central speedometer made using Syncfusion gauge package, that shows current speed
+// Also shows highest speed so far since app was opened
+
 class Speedometer extends StatelessWidget {
   const Speedometer({
     Key? key,
@@ -29,13 +29,11 @@ class Speedometer extends StatelessWidget {
       color: Colors.white,
     );
     return SfRadialGauge(
-
       axes: <RadialAxis>[
         RadialAxis(
           minimum: gaugeBegin,
           maximum: gaugeEnd,
-          labelOffset: 30,
-
+          labelOffset: 15,
           axisLineStyle: const AxisLineStyle(
             thicknessUnit: GaugeSizeUnit.factor,
             thickness: 0.03,
@@ -53,7 +51,7 @@ class Speedometer extends StatelessWidget {
           axisLabelStyle: const GaugeTextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
-            fontSize: 14,
+            fontSize: 12,
           ),
           ranges: <GaugeRange>[
             GaugeRange(
@@ -63,8 +61,8 @@ class Speedometer extends StatelessWidget {
               startWidth: 0.03,
               endWidth: 0.03,
               gradient: const SweepGradient(
-                colors: <Color>[Colors.green, Colors.yellow, Colors.red],
-                stops: <double>[0.0, 0.5, 1],
+                colors: <Color>[Colors.green, Colors.green, Colors.yellow, Colors.yellow, Colors.red],
+                stops: <double>[0.0, 0.25, 0.5, 0.75, 1],
               ),
             ),
           ],
@@ -99,7 +97,7 @@ class Speedometer extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     velocity!.toStringAsFixed(2),
-                    style: _annotationTextStyle.copyWith(fontSize: 25),
+                    style: _annotationTextStyle.copyWith(fontSize: 20),
                   ),
                   const SizedBox(width: 10),
                   Text(velocityUnit, style: _annotationTextStyle),

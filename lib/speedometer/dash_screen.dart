@@ -67,7 +67,7 @@ class _DashScreenState extends State<DashScreen> {
   );
 
   /// TTS talk duration
-  final Duration _ttsDuration = const Duration(seconds: 3);
+  final Duration _ttsDuration = const Duration(seconds: 9);
 
   // For velocity Tracking
   /// Geolocator is used to find velocity
@@ -84,13 +84,11 @@ class _DashScreenState extends State<DashScreen> {
 
   @override
   void initState() {
-  //  _ttsService.getLanguages.then((value) => print(value.toString()));
     super.initState();
     // Speedometer functionality. Updates any time velocity changes.
     _velocityUpdatedStreamController = StreamController<double?>();
     locator.getPositionStream(locationSettings: const LocationSettings(accuracy: LocationAccuracy.bestForNavigation))
-        .listen(
-          (Position position) => _onAccelerate(position.speed),
+        .listen((Position position) => _onAccelerate(position.speed),
     );
 
     // Set velocities to zero when app opens
@@ -109,8 +107,9 @@ class _DashScreenState extends State<DashScreen> {
         // Start text to speech service
         _startTTS();
       });
-
   }
+
+
 
   /// Callback that runs when velocity updates, which in turn updates stream.
   void _onAccelerate(double speed) {
@@ -124,19 +123,22 @@ class _DashScreenState extends State<DashScreen> {
     if(_velocity! > 120){
       _ttsService.speak("Yüksek hız");
     }
-
   }
 
   @override
   Widget build(BuildContext context) {
-    const double gaugeBegin = 0, gaugeEnd = 200;
+    const double gaugeBegin = 0, gaugeEnd = 180;
+
+    double width = MediaQuery.of(context).size.width / 2;
 
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.zero,
-      height: 360,
-      width: 350,
+      margin: EdgeInsets.zero,
+      height: width + 35,
+      width: width ,
       child: ListView(
+        padding: EdgeInsets.zero,
 
         children: [
           // StreamBuilder updates Speedometer when new velocity received
@@ -144,7 +146,10 @@ class _DashScreenState extends State<DashScreen> {
             stream: _velocityUpdatedStreamController.stream,
             builder: (context, snapshot) {
               return Container(
+                width: width,
+                height: width,
                 padding: EdgeInsets.zero,
+                margin: EdgeInsets.zero,
                 child: Speedometer(
                   gaugeBegin: gaugeBegin,
                   gaugeEnd: gaugeEnd,
@@ -152,10 +157,7 @@ class _DashScreenState extends State<DashScreen> {
                   maxVelocity: _highestVelocity,
                   velocityUnit: widget.unit,
                 ),
-                width: 300,
-                height: 300,
-              )
-              ;
+              );
             },
           ),
           TextToSpeechSettingsForm(
@@ -176,4 +178,6 @@ class _DashScreenState extends State<DashScreen> {
     _ttsService.stop();
     super.dispose();
   }
+
+
 }

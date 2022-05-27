@@ -1,4 +1,4 @@
-import 'package:driver_monitoring_system/speedometer/master.dart';
+import 'package:driver_monitoring_system/speedometer/speed_screen.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather_builder.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -128,7 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
           children: [
             MapScreen(),
             CurrentWeatherPage(weatherUseCase: useCase,),
-            SpeedometerApp()
+            SpeedScreen()
           ],
         ),
       ),

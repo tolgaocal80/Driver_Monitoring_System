@@ -4,32 +4,29 @@ class TextToSpeechSettingsForm extends StatelessWidget {
   const TextToSpeechSettingsForm({
     required this.isTTSActive,
     required this.activeSetter,
-
     Key? key,
   }) : super(key: key);
 
   final bool isTTSActive;
-
   final void Function(bool) activeSetter;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 0, bottom: 0, left: 50, right: 50),
-      padding: const EdgeInsets.only(top: 5, bottom: 5, left: 5, right: 5),
-    //  width: MediaQuery.of(context).size.width / 2 - 20,
-    //  height: MediaQuery.of(context).size.height / 2 - 80,
+      margin: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
+        borderRadius: BorderRadius.circular(10),
         color: const Color(0xFF252222),
       ),
       alignment: Alignment.center,
+      height: 30,
+
       child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Text(
                 'Hızı seslendir:  ',
-                style: TextStyle(color: Colors.white, fontSize: 18),
+                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
               ),
               Switch(
                 value: isTTSActive,
