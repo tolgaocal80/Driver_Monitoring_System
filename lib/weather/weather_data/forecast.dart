@@ -6,5 +6,4 @@ class Forecast {
   final List<Weather> predictions;
 
   Forecast({required this.name, required this.predictions});
-
 }

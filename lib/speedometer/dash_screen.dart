@@ -87,6 +87,7 @@ class _DashScreenState extends State<DashScreen> {
     super.initState();
     // Speedometer functionality. Updates any time velocity changes.
     _velocityUpdatedStreamController = StreamController<double?>();
+
     locator.getPositionStream(locationSettings: const LocationSettings(accuracy: LocationAccuracy.bestForNavigation))
         .listen((Position position) => _onAccelerate(position.speed),
     );
@@ -153,8 +154,8 @@ class _DashScreenState extends State<DashScreen> {
                 child: Speedometer(
                   gaugeBegin: gaugeBegin,
                   gaugeEnd: gaugeEnd,
-                  velocity: _velocity,
-                  maxVelocity: _highestVelocity,
+                  velocity: (_velocity! * 3.6),
+                  maxVelocity: (_highestVelocity! * 3.6),
                   velocityUnit: widget.unit,
                 ),
               );

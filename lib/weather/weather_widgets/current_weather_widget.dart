@@ -15,7 +15,6 @@ class CurrentWeatherPage extends StatefulWidget {
 
   @override
   _CurrentWeatherPageState createState() => _CurrentWeatherPageState();
-
 }
 
 class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
@@ -35,7 +34,7 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
               return Text("${snapshot.error}", key: CurrentWeatherPage.errorKey);
             }
             return const Center(
-              child: SpinKitSpinningLines(color: Colors.black, ),
+              child: SpinKitFadingFour(color: Colors.black, ),
             );
           },
         ),

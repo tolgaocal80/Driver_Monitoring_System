@@ -7,5 +7,4 @@ class WeatherResult {
   Forecast forecast;
 
   WeatherResult({required this.weather, required this.forecast});
-
 }

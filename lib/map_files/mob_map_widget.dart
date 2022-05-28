@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'package:driver_monitoring_system/pythonComponents/single_caruser.dart';
+import 'package:driver_monitoring_system/user_dao/car_user.dart';
+import 'package:driver_monitoring_system/weather/common/date_formatter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,7 +13,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:lottie/lottie.dart' as lot;
 import 'package:firebase_database/firebase_database.dart';
-
 
 MapWidget getMapWidget() => MobileMap();
 
@@ -42,23 +45,42 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     checkGPSPermission();
   }
 
-  final DatabaseReference ref = FirebaseDatabase.instanceFor(app: Firebase.app(),databaseURL: "https://ytu-surucu-destek-sistemi-default-rtdb.europe-west1.firebasedatabase.app").ref();
+  DatabaseReference reference = SingleCarUser.instance.ref;
 
-  getCurrentLocationFromPosition() async {
-    position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high) ;
+  getCurrentLocationFromPosition() {
     return LatLng(position.latitude, position.longitude);
   }
 
-  void saveData() async{
-    await ref.child('users').push().set({
-      "name": "John",
-      "age": 18,
-      "address": {
-        "line1": "100 Mountain View"
-      }
-    });
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  void saveData({required String latitude, required String longitude, required String status, required String leftWarning, required String rightWarning}) async{
+    CarUser carUser = SingleCarUser.instance.carUser;
+
+    carUser.latitude = latitude;
+    carUser.longitude = longitude;
+    carUser.status = status;
+    carUser.time = DateFormatter.dateTime(DateTime.now());
+    carUser.leftWarning = leftWarning;
+    carUser.rightWarning = rightWarning;
+
+    await reference.child('users/${carUser.uid}').push().set(carUser.toJson());
   }
 
+  Set<Marker> _markers = {};
+
+  Future<void> updateUserData({required String latitude, required String longitude, required String status, required String leftWarning, required String rightWarning}) async {
+    CarUser carUser = SingleCarUser.instance.carUser;
+
+    carUser.latitude = latitude;
+    carUser.longitude = longitude;
+    carUser.status = status;
+    carUser.time = DateFormatter.dateTime(DateTime.now());
+    carUser.leftWarning = leftWarning;
+    carUser.rightWarning = rightWarning;
+
+    await reference.child('users/${carUser.uid}')
+        .update(carUser.toJson());
+  }
 
   @override
   void initState() {
@@ -66,9 +88,30 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     _changeMapTypeAnimationController = AnimationController(vsync: this)..value = 0;
     _getMyLocationAnimationController = AnimationController(vsync: this)..value = 0;
     _getCarLocationAnimationController = AnimationController(vsync: this)..value = 0;
-  }
 
-  String userId = FirebaseAuth.instance.currentUser!.uid;
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) => position = value);
+
+    reference.child("users/$userId").onValue.listen((DatabaseEvent event) {
+
+      if(!event.snapshot.exists){
+        print("FIREBASE STORAGE EXCEPTION");
+        throw FirebaseException(plugin: "Fireabase Storage NULL DATA");
+      }
+
+      SingleCarUser.instance.carUser = CarUser.fromDataSnapshot(event.snapshot);
+      CarUser user = SingleCarUser.instance.carUser;
+
+      print("USER DATA ( STATUS ) : " + user.status);
+      print("USER DATA ( LATITUDE ) : " + user.latitude);
+      print("USER DATA ( LONGITUDE ) : " + user.longitude);
+      print("USER DATA ( UID ) : " + user.uid);
+      print("USER DATA ( RIGHT WARNING ) : " + user.rightWarning);
+      print("USER DATA ( LEFT WARNING ) : " + user.leftWarning);
+      print("USER DATA ( TIME ) : " + user.time);
+
+      _markers.clear();
+    });
+  }
 
   // Changes map apperance type
   void _setMapType() {
@@ -78,8 +121,8 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     _changeMapTypeAnimationController.forward().whenComplete(() => _changeMapTypeAnimationController.reset());
   }
 
-  _goToCurrentLocation() async {
-    currentLocation = await getCurrentLocationFromPosition();
+  _goToCurrentLocation() {
+    currentLocation = getCurrentLocationFromPosition();
     mapController.animateCamera(CameraUpdate.newLatLngZoom(currentLocation, 15));
   }
 
@@ -142,7 +185,8 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
                       backgroundColor: _mapButtonsColor,
                       onPressed: () {
                         _setMapType();
-                        saveData();
+                      //  saveData(longitude: currentLocation.longitude.toString(), latitude: currentLocation.latitude.toString(), status: true, leftWarning: false, rightWarning: false);
+                        updateUserData(latitude: position.latitude.toString(), longitude: position.longitude.toString(), status: "false", leftWarning: "false", rightWarning: "false");
                       },
                     ),
                   ),
@@ -241,5 +285,6 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
       _goToCurrentLocation();
     }
   }
-
 }
+
+// Class which parse the data from database

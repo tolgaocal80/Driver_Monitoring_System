@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'home_page.dart';
 import 'login/screens/login_page.dart';
@@ -10,7 +9,6 @@ Future<void> main() async {
   await Firebase.initializeApp();
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
    MyApp({Key? key}) : super(key: key);
@@ -25,7 +23,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: user == null ? LoginPage() : MyHomePage(user!)
+      home:  user == null ? LoginPage() : MyHomePage(user!),
     );
   }
 }

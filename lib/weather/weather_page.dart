@@ -4,7 +4,6 @@ import 'package:driver_monitoring_system/weather/common/date_formatter.dart';
 import 'package:driver_monitoring_system/weather/weather_data/forecast.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather_result.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,7 +30,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   @override
   void initState() {
     super.initState();
-    geolocator.getPositionStream(locationSettings: const LocationSettings(timeLimit: Duration(seconds: 10)))
+
+    geolocator.getPositionStream(locationSettings: const LocationSettings(timeLimit: Duration(seconds: 20)))
         .listen((position) async {
           currentPosition = position;
           placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
@@ -449,7 +449,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                           ),
                         ),
                         LaneViolation()
-
                       ],
                     ),
 
