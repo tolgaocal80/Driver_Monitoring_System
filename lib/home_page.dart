@@ -44,11 +44,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   User carUser = FirebaseAuth.instance.currentUser!;
   late WeatherUseCase useCase;
+  late WeatherUseCase useCaseCarUser;
 
   @override
   void initState() {
     super.initState();
     useCase = WeatherBuilder().build();
+
   }
 
   @override

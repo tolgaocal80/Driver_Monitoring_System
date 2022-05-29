@@ -9,15 +9,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
 class DashScreen extends StatefulWidget {
-  const DashScreen({this.unit = 'km/h', Key? key}) : super(key: key);
-
-  final String unit;
-
+  DashScreen({Key? key}) : super(key: key);
   @override
-  _DashScreenState createState() => _DashScreenState();
+  DashScreenState createState() => DashScreenState();
 }
 
-class _DashScreenState extends State<DashScreen> {
+class DashScreenState extends State<DashScreen> {
   SharedPreferences? _sharedPreferences;
   // For text to speed narration of current velocity
   /// Initiate service
@@ -85,11 +82,19 @@ class _DashScreenState extends State<DashScreen> {
   @override
   void initState() {
     super.initState();
+
     // Speedometer functionality. Updates any time velocity changes.
     _velocityUpdatedStreamController = StreamController<double?>();
-
-    locator.getPositionStream(locationSettings: const LocationSettings(accuracy: LocationAccuracy.bestForNavigation))
-        .listen((Position position) => _onAccelerate(position.speed),
+    // Speedometer functionality. Updates any time velocity chages.
+    _velocityUpdatedStreamController = StreamController<double?>();
+    locator
+        .getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+      ),
+    )
+        .listen(
+          (Position position) => _onAccelerate(position.speed),
     );
 
     // Set velocities to zero when app opens
@@ -110,20 +115,18 @@ class _DashScreenState extends State<DashScreen> {
       });
   }
 
-
+  /// Velocity in m/s to km/hr converter
+  double mpstokmph(double mps) => mps * 18 / 5;
 
   /// Callback that runs when velocity updates, which in turn updates stream.
   void _onAccelerate(double speed) {
     locator.getCurrentPosition().then(
           (Position updatedPosition) {
-        _velocity = (speed + updatedPosition.speed) / 2;
+        _velocity = (mpstokmph(speed) + mpstokmph(updatedPosition.speed)) / 2;
         if (_velocity! > _highestVelocity!) _highestVelocity = _velocity;
         _velocityUpdatedStreamController.add(_velocity);
       },
     );
-    if(_velocity! > 120){
-      _ttsService.speak("Yüksek hız");
-    }
   }
 
   @override
@@ -133,41 +136,49 @@ class _DashScreenState extends State<DashScreen> {
     double width = MediaQuery.of(context).size.width / 2;
 
     return Container(
-      alignment: Alignment.center,
       padding: EdgeInsets.zero,
       margin: EdgeInsets.zero,
-      height: width + 35,
-      width: width ,
-      child: ListView(
-        padding: EdgeInsets.zero,
+      decoration: const BoxDecoration(
+          color: Colors.black,
+          borderRadius: BorderRadius.all(Radius.circular(20))
+      ),
+      child: Container(
+          alignment: Alignment.center,
+          padding: EdgeInsets.zero,
+          margin: EdgeInsets.zero,
+          height: width + 35,
+          width: width ,
+          child: ListView(
+            padding: EdgeInsets.zero,
 
-        children: [
-          // StreamBuilder updates Speedometer when new velocity received
-          StreamBuilder<Object?>(
-            stream: _velocityUpdatedStreamController.stream,
-            builder: (context, snapshot) {
-              return Container(
-                width: width,
-                height: width,
-                padding: EdgeInsets.zero,
-                margin: EdgeInsets.zero,
-                child: Speedometer(
-                  gaugeBegin: gaugeBegin,
-                  gaugeEnd: gaugeEnd,
-                  velocity: (_velocity! * 3.6),
-                  maxVelocity: (_highestVelocity! * 3.6),
-                  velocityUnit: widget.unit,
-                ),
-              );
-            },
-          ),
-          TextToSpeechSettingsForm(
-            isTTSActive: _isTTSActive,
-            activeSetter: setIsActive,
-          ),
-        ],
-      )
+            children: [
+              // StreamBuilder updates Speedometer when new velocity received
+              StreamBuilder<Object?>(
+                stream: _velocityUpdatedStreamController.stream,
+                builder: (context, snapshot) {
+                  return Container(
+                    width: width,
+                    height: width,
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    child: Speedometer(
+                      gaugeBegin: gaugeBegin,
+                      gaugeEnd: gaugeEnd,
+                      velocity: (_velocity!),
+                      maxVelocity: (_highestVelocity!),
+                    ),
+                  );
+                },
+              ),
+              TextToSpeechSettingsForm(
+                isTTSActive: _isTTSActive,
+                activeSetter: setIsActive,
+              ),
+            ],
+          )
+      ),
     );
+
   }
 
   @override

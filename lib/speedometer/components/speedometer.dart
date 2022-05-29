@@ -11,15 +11,12 @@ class Speedometer extends StatelessWidget {
     required this.gaugeEnd,
     required this.velocity,
     required this.maxVelocity,
-    required this.velocityUnit,
   }) : super(key: key);
 
   final double gaugeBegin;
   final double gaugeEnd;
   final double? velocity;
   final double? maxVelocity;
-
-  final String velocityUnit;
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +97,7 @@ class Speedometer extends StatelessWidget {
                     style: _annotationTextStyle.copyWith(fontSize: 20),
                   ),
                   const SizedBox(width: 10),
-                  Text(velocityUnit, style: _annotationTextStyle),
+                  const Text('km/h', style: _annotationTextStyle),
                 ],
               ),
               angle: 90,

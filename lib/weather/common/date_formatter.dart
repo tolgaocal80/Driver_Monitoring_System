@@ -8,7 +8,7 @@ class DateFormatter {
   }
 
   static String dateTime(DateTime dt) {
-    DateFormat formatter = DateFormat('dd/MM/yyyy HH:mm:ss');
+    DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
     return formatter.format(dt);
   }
   

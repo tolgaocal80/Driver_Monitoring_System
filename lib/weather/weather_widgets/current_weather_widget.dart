@@ -20,6 +20,7 @@ class CurrentWeatherPage extends StatefulWidget {
 class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
 
   late WeatherResult weatherResult;
+  // CHANGE GET METHOD TYPE IF YOU WANT USER LOCATION WEATHER
 
   @override
   Widget build(BuildContext context) {    

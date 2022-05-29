@@ -1,3 +1,7 @@
+import 'package:driver_monitoring_system/pythonComponents/single_caruser.dart';
+import 'package:driver_monitoring_system/user_dao/car_user.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import 'weather.dart';
 import 'forecast.dart';
 import 'weather_result.dart';
@@ -18,6 +22,18 @@ class WeatherUseCase {
   ForecastService _forecastService;
 
   WeatherUseCase(this._location, this._weatherService, this._forecastService);
+
+  DatabaseReference reference = SingleCarUser.instance.ref;
+
+  Future<WeatherResult> getFromCarLocation() async {
+    CarUser user = SingleCarUser.instance.carUser;
+    var latitude = double.parse(user.latitude);
+    var longitude = double.parse(user.longitude);
+
+    Weather weather = await _weatherService.get(latitude, longitude);
+    Forecast forecast = await _forecastService.get(latitude, longitude);
+    return Future.value(WeatherResult(weather: weather, forecast: forecast));
+  }
 
   Future<WeatherResult> get() async {
 

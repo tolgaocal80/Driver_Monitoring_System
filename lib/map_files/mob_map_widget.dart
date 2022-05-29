@@ -39,19 +39,21 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
   late final AnimationController _getMyLocationAnimationController;
   late final AnimationController _getCarLocationAnimationController;
 
+  DatabaseReference reference = SingleCarUser.instance.ref;
+  String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  Set<Marker> _markers = {};
+  late Marker marker;
+
   // Assign Map Controller
   void _onMapCreated(GoogleMapController gController) {
     mapController = gController;
     checkGPSPermission();
   }
 
-  DatabaseReference reference = SingleCarUser.instance.ref;
-
   getCurrentLocationFromPosition() {
     return LatLng(position.latitude, position.longitude);
   }
-
-  String userId = FirebaseAuth.instance.currentUser!.uid;
 
   void saveData({required String latitude, required String longitude, required String status, required String leftWarning, required String rightWarning}) async{
     CarUser carUser = SingleCarUser.instance.carUser;
@@ -66,9 +68,8 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     await reference.child('users/${carUser.uid}').push().set(carUser.toJson());
   }
 
-  Set<Marker> _markers = {};
-
-  Future<void> updateUserData({required String latitude, required String longitude, required String status, required String leftWarning, required String rightWarning}) async {
+  Future<void> updateUserData({required String latitude, required String longitude,
+    required String status, required String leftWarning, required String rightWarning}) async {
     CarUser carUser = SingleCarUser.instance.carUser;
 
     carUser.latitude = latitude;
@@ -80,37 +81,6 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
 
     await reference.child('users/${carUser.uid}')
         .update(carUser.toJson());
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _changeMapTypeAnimationController = AnimationController(vsync: this)..value = 0;
-    _getMyLocationAnimationController = AnimationController(vsync: this)..value = 0;
-    _getCarLocationAnimationController = AnimationController(vsync: this)..value = 0;
-
-    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) => position = value);
-
-    reference.child("users/$userId").onValue.listen((DatabaseEvent event) {
-
-      if(!event.snapshot.exists){
-        print("FIREBASE STORAGE EXCEPTION");
-        throw FirebaseException(plugin: "Fireabase Storage NULL DATA");
-      }
-
-      SingleCarUser.instance.carUser = CarUser.fromDataSnapshot(event.snapshot);
-      CarUser user = SingleCarUser.instance.carUser;
-
-      print("USER DATA ( STATUS ) : " + user.status);
-      print("USER DATA ( LATITUDE ) : " + user.latitude);
-      print("USER DATA ( LONGITUDE ) : " + user.longitude);
-      print("USER DATA ( UID ) : " + user.uid);
-      print("USER DATA ( RIGHT WARNING ) : " + user.rightWarning);
-      print("USER DATA ( LEFT WARNING ) : " + user.leftWarning);
-      print("USER DATA ( TIME ) : " + user.time);
-
-      _markers.clear();
-    });
   }
 
   // Changes map apperance type
@@ -127,12 +97,50 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
   }
 
   _goToCarLocation() async {
-    // Add go to car location method
-    _goToCurrentLocation();
+    goToMarkerLocation(marker);
   }
 
-  goToLocation(Location location) {
-    mapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(location.latitude,location.longitude), 15));
+  goToMarkerLocation(Marker locationMarker) {
+    mapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(locationMarker.position.latitude,locationMarker.position.longitude), 15));
+  }
+
+  createCarLocationMarker(CarUser user) {
+    var lat = double.parse(user.latitude);
+    var longitude = double.parse(user.longitude);
+
+    marker = Marker(markerId: MarkerId(user.uid),position: LatLng(lat, longitude), infoWindow: const InfoWindow(title: "Sürücü konumu"));
+    return marker;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _changeMapTypeAnimationController = AnimationController(vsync: this)..value = 0;
+    _getMyLocationAnimationController = AnimationController(vsync: this)..value = 0;
+    _getCarLocationAnimationController = AnimationController(vsync: this)..value = 0;
+
+    Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) => position = value);
+
+    reference.child("users/$userId").onValue.listen((DatabaseEvent event) {
+
+      if(!event.snapshot.exists){
+        print("FIREBASE STORAGE NULL VALUE RECEIVED");
+      }
+
+      SingleCarUser.instance.carUser = CarUser.fromDataSnapshot(event.snapshot);
+      CarUser user = SingleCarUser.instance.carUser;
+
+      // FOR DEBUG PURPOSES
+      print("USER DATA ( LATITUDE ) : " + user.latitude);
+      print("USER DATA ( LONGITUDE ) : " + user.longitude);
+      print("USER DATA ( UID ) : " + user.uid);
+
+      setState(() {
+        _markers.clear();
+        _markers.add(createCarLocationMarker(user));
+      });
+    });
+
   }
 
   @override
@@ -150,6 +158,7 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
             tiltGesturesEnabled: false,
             mapType: _currentMapType,
             mapToolbarEnabled: false,
+            markers: _markers,
             myLocationButtonEnabled: false,
             initialCameraPosition: initialCameraPosition,
           ),
@@ -185,7 +194,6 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
                       backgroundColor: _mapButtonsColor,
                       onPressed: () {
                         _setMapType();
-                      //  saveData(longitude: currentLocation.longitude.toString(), latitude: currentLocation.latitude.toString(), status: true, leftWarning: false, rightWarning: false);
                         updateUserData(latitude: position.latitude.toString(), longitude: position.longitude.toString(), status: "false", leftWarning: "false", rightWarning: "false");
                       },
                     ),
@@ -286,5 +294,3 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     }
   }
 }
-
-// Class which parse the data from database

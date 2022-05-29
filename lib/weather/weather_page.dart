@@ -1,15 +1,19 @@
+import 'dart:async';
 import 'package:driver_monitoring_system/lane/lane_violation.dart';
-import 'package:driver_monitoring_system/speedometer/speed_screen.dart';
+import 'package:driver_monitoring_system/pythonComponents/single_caruser.dart';
 import 'package:driver_monitoring_system/weather/common/date_formatter.dart';
 import 'package:driver_monitoring_system/weather/weather_data/forecast.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather.dart';
 import 'package:driver_monitoring_system/weather/weather_data/weather_result.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../speedometer/dash_screen.dart';
+import '../user_dao/car_user.dart';
 
 class WeatherHomePage extends StatefulWidget {
    WeatherHomePage( {Key? key, required this.weatherResult}) : super(key: key);
@@ -25,23 +29,83 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
   GeolocatorPlatform geolocator= GeolocatorPlatform.instance;
   late Position currentPosition;
   late String locationAddress = "";
-  late List<Placemark> placemark;
+  late List<Placemark> placemarks;
+  CarUser carUser = SingleCarUser.instance.carUser;
+  Placemark place = Placemark();
+
+  late StreamController<double?> _velocityUpdatedStreamController;
+  // For velocity Tracking
+  /// Geolocator is used to find velocity
+  GeolocatorPlatform locator = GeolocatorPlatform.instance;
+  double? _velocity;
 
   @override
   void initState() {
     super.initState();
 
-    geolocator.getPositionStream(locationSettings: const LocationSettings(timeLimit: Duration(seconds: 20)))
+    // Speedometer functionality. Updates any time velocity changes.
+    _velocityUpdatedStreamController = StreamController<double?>();
+
+    locator.getPositionStream(locationSettings: const LocationSettings(accuracy: LocationAccuracy.bestForNavigation))
+        .listen((position) {
+      _velocity =  ( (position.speed * 18) / 5 );
+      _velocityUpdatedStreamController.add(_velocity);
+    });
+
+    DatabaseReference reference = SingleCarUser.instance.ref;
+
+    reference.child("users/${carUser.uid}").onValue.listen((DatabaseEvent event) {
+
+      if(!event.snapshot.exists){
+        print("FIREBASE STORAGE NULL VALUE RECEIVED");
+      }
+
+      SingleCarUser.instance.carUser = CarUser.fromDataSnapshot(event.snapshot);
+      CarUser user = SingleCarUser.instance.carUser;
+
+      // FOR DEBUG PURPOSES
+      print("USER DATA ( LATITUDE ) : " + user.latitude);
+      print("USER DATA ( LONGITUDE ) : " + user.longitude);
+      print("USER DATA ( UID ) : " + user.uid);
+
+      var difference = DateTime.now().difference(DateTime.parse(user.time));
+
+      if(difference.inSeconds > 20){
+
+        locationAddress = "";
+        var lat = double.parse(user.latitude);
+        var longitude = double.parse(user.longitude);
+
+        placemarkFromCoordinates(lat,longitude).then((value) => placemarks = value);
+
+        place = placemarks[0];
+
+        setState(() {
+          locationAddress = "${place.thoroughfare}, ${place.subLocality}\n"
+              "${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
+        });
+      }
+
+    });
+
+    /*
+    geolocator.getPositionStream(locationSettings: const LocationSettings(timeLimit: Duration(seconds: 3)))
         .listen((position) async {
+
           currentPosition = position;
-          placemark = await placemarkFromCoordinates(position.latitude, position.longitude);
-          Placemark place = placemark[0];
+          placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+          Placemark place = placemarks[0];
+
           setState(() {
             locationAddress = "${place.thoroughfare}, ${place.subLocality}\n"
                 "${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
           });
+
     },
     );
+
+     */
+
   }
 
   @override
@@ -266,29 +330,42 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                             ],
                           ),
                         ),
+
+
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: size.width * 0.008, vertical: size.width * 0.008,),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              SpeedScreen(),
+                              DashScreen(),
                               Container(
                                   padding: EdgeInsets.symmetric(horizontal: size.width * 0.01, vertical: size.width*0.01),
                                   margin: EdgeInsets.symmetric(vertical: size.width*0.003),
                                   width: size.width * 0.5,
                                   height: size.width * 0.3,
                                   alignment: Alignment.centerLeft,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                       color: Colors.black,
                                       borderRadius: BorderRadius.all(Radius.circular(20))
                                   ),
                                   child: Column(
                                     children: [
-                                      Text("Azami Hız : ", style: _annotationTextStyle),
+                                      Text("Fren Mesafesi", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
                                       Divider(
                                         color: Colors.white,
                                       ),
-                                      Text("150" + " km/h", style: _annotationTextStyle),
+                                      StreamBuilder<double?>(
+                                        stream: _velocityUpdatedStreamController.stream,
+                                        builder: (BuildContext context, AsyncSnapshot<double?> snapshot) {
+                                          double speedKm = (snapshot.data! * 18 / 5);
+                                          int breakingDistance = ((speedKm/3.6) + ((speedKm/10)*(speedKm/10)*0.4)).toInt();
+                                          return Text(
+                                              breakingDistance.toString(),
+                                              style: const TextStyle(color: Colors.teal, fontSize: 36)
+                                          );
+                                        },
+                                        initialData: 0.0,
+                                        )
                                     ],
                                   )
                               ),
@@ -448,7 +525,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                             ),
                           ),
                         ),
-                        LaneViolation()
+                        LaneCheck()
                       ],
                     ),
 
