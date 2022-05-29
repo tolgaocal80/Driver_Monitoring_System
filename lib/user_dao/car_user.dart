@@ -1,6 +1,25 @@
 import 'dart:collection';
 import 'package:firebase_database/firebase_database.dart';
 
+
+/*
+
+Araç kullanıcı modeli. Burada bir araç sürücüsü verisinin neler içerdiği görülmektedir.
+
+   String latitude  --> Kullanıcının latitude (enlem) coğrafik değerini temsil eder.
+   String longitude --> Kullanıcının longitude (boylam) coğrafik değerini temsil eder.
+   String status    --> Kullanıcının çevrimiçi olup olmadığı değerini temsil eder.
+   String time      --> Kullanıcının o anki zaman değerini temsil eder.
+   String uid       --> Kullanıcının özgün kullanıcı kimliği değerini temsil eder.
+   String leftWarning --> Kullanıcının sol tarafındaki yakınlık sensörü değerini temsil eder.
+   String rightWarning  --> Kullanıcının sağ tarafındaki yakınlık sensörü değerini temsil eder.
+
+Herhangi bir kullanıcı verisi güncellendiğinde, bu sınıf ile yeni kullanıcı oluşturulabilir
+ya da mevcut kullanıcı güncellenir.
+
+ */
+
+
 class CarUser {
 
    String latitude;

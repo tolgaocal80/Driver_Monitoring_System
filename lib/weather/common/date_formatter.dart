@@ -1,5 +1,12 @@
 import 'package:intl/intl.dart';
 
+/*
+
+Şu anki zamanı istenilen formata getiren genel yardımcı sınıf.
+
+ */
+
+
 class DateFormatter {
 
   static String date(DateTime dt) {

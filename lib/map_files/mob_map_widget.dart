@@ -16,6 +16,25 @@ import 'package:firebase_database/firebase_database.dart';
 
 MapWidget getMapWidget() => MobileMap();
 
+
+/*
+
+Harita ekranını içeren sınıftır. Harita ekranında sürücü konumu "her güncellendiğinde" bu bir
+marker (harita işaretleyici) olarak harita üzerinde gösterilir. Bu güncelleme kontrolü ise Firebase veritabanının sürekli
+olarak dinlenmesiyle yapılır. Sürücü konum değerleri değiştiği anda anlık olarak harita da yeni marker çizilir.
+
+- Harita ekranında sağ üst köşede bulunan "Harita tipini değiştir" butonu ise Google haritaların görünümünü
+uydu yada arazi görünümü arasında değiştirmemizi sağlar.
+
+- Harita ekranında sağ üst köşede bulunan "Konumuma git" butonu, cep telefonu kullanıcısının kendi konumunu
+telefon GPS i yardımı ile bulur ve harita ekranını o konuma götürür.
+
+- Harita ekranında sağ üst köşede bulunan "Araç konumuna git" butonu ise araç kullanıcısının lokasyonunu veritabanına
+gönderilen anlık konum bilgileri ile bulur ve harita ekranını o konuma götürür.
+
+
+ */
+
 class MobileMap extends StatefulWidget implements MapWidget {
   MobileMap({Key? key}) : super(key: key);
 
@@ -83,7 +102,7 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
         .update(carUser.toJson());
   }
 
-  // Changes map apperance type
+  // Harita arayüzünü degistirir
   void _setMapType() {
     setState(() {
       _currentMapType = _currentMapType == MapType.normal ? MapType.satellite :MapType.normal;
@@ -91,19 +110,23 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     _changeMapTypeAnimationController.forward().whenComplete(() => _changeMapTypeAnimationController.reset());
   }
 
+  // Harita ekranını şuanki uygulama kullanıcısı konumuna götürür
   _goToCurrentLocation() {
     currentLocation = getCurrentLocationFromPosition();
     mapController.animateCamera(CameraUpdate.newLatLngZoom(currentLocation, 15));
   }
 
+  // Harita ekranını sürücü konumuna götürür
   _goToCarLocation() async {
     goToMarkerLocation(marker);
   }
 
+  // Harita ekranını marker konumuna götürür
   goToMarkerLocation(Marker locationMarker) {
     mapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(locationMarker.position.latitude,locationMarker.position.longitude), 15));
   }
 
+  // Marker oluşturur
   createCarLocationMarker(CarUser user) {
     var lat = double.parse(user.latitude);
     var longitude = double.parse(user.longitude);
@@ -121,6 +144,7 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
 
     Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) => position = value);
 
+    // Veritabanı değişikliklerini sürekli olarak dinler
     reference.child("users/$userId").onValue.listen((DatabaseEvent event) {
 
       if(!event.snapshot.exists){
@@ -262,6 +286,7 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
 
   }
 
+  // Kullanıcı izinleri sorgular
   checkGPSPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -293,4 +318,6 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
       _goToCurrentLocation();
     }
   }
+
+
 }

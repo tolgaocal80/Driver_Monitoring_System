@@ -5,6 +5,16 @@ import '../utils/fire_auth.dart';
 import '../utils/validator.dart';
 import '../../home_page.dart';
 
+/*
+
+Login sınıfı, uygulamayı ilk kez kullanacak olan kullanıcıların sisteme giriş yapabilmelerini sağlar. Her kullanıcının ayrı verileri vardır
+ve kullanıcıların verileri bu sayede koruma altına alınmıştır. Kullanıcılara sadece kendilerine ait araç bilgileri iletilir.
+
+email ve şifre kullanılarak doğrulama sağlanır.
+ */
+
+
+
 class LoginPage extends StatefulWidget{
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -29,7 +39,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
     loginAnimationController = AnimationController(vsync: this)..value = 0;
   }
 
-
+  void showToast(BuildContext context, Object? object) {
+    final scaffold = ScaffoldMessenger.of(context);
+    scaffold.showSnackBar(
+      SnackBar(
+        content:  Text(object.toString()),
+        action: SnackBarAction(label: 'UNDO', onPressed: scaffold.hideCurrentSnackBar),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +69,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
                         children: [
 
                           Text(
-                            'Login',
+                            'Giriş Yapın',
                             style: Theme.of(context).textTheme.headline1,
                           ),
 
@@ -87,7 +105,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
                               password: value,
                             ),
                             decoration: InputDecoration(
-                              hintText: "Password",
+                              hintText: "Şifre",
                               errorBorder: UnderlineInputBorder(
                                 borderRadius: BorderRadius.circular(6.0),
                                 borderSide: const BorderSide(
@@ -115,12 +133,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
                                         _isProcessing = true;
                                       });
 
-                                      User? user = await FireAuth
-                                          .signInUsingEmailPassword(
-                                        email: _emailTextController.text,
-                                        password:
-                                        _passwordTextController.text,
-                                      );
+                                      User? user = await FireAuth.signInUsingEmailPassword(
+                                          email: _emailTextController.text,
+                                          password: _passwordTextController.text);
+
 
                                       setState(() {
                                         _isProcessing = false;
@@ -131,14 +147,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
                                             .pushReplacement(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                MyHomePage(user),
+                                                MyHomePage(user!),
                                           ),
                                         );
                                       }
                                     }
                                   },
                                   child: const Text(
-                                    'Sign In',
+                                    'Giriş Yap',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),
@@ -155,7 +171,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
                                     );
                                   },
                                   child: const Text(
-                                    'Register',
+                                    'Kayıt Ol',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                 ),

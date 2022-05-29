@@ -5,6 +5,14 @@ import '../common/constants.dart';
 import 'current_weather_service.dart';
 import 'forecast_weather_service.dart';
 
+
+/*
+
+Hava durumu için yardımcı sınıflar
+
+ */
+
+
 class WeatherBuilder {
   
   WeatherUseCase build() {

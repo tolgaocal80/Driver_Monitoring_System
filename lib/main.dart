@@ -10,6 +10,14 @@ Future<void> main() async {
   runApp(MyApp());
 }
 
+/*
+
+Uygulamanın ilk açıldığı yerdir. Önceden giriş yapmış bir kullanıcı var ise direkt olarak bilgiler ekranına gönderir. Eğer giriş yapmış kullanıcı yoksa
+bunun yerine "Giriş yap" ya da "Kayıt ol" sayfalarına yönlendirir.
+
+ */
+
+
 class MyApp extends StatelessWidget {
    MyApp({Key? key}) : super(key: key);
 

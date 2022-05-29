@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
-// The central speedometer made using Syncfusion gauge package, that shows current speed
-// Also shows highest speed so far since app was opened
+/*
+
+Hız göstergesi ekranı.
+Kullanıcı hız değerlerini sürekli olarak dinler ve hızdaki değişimi ekranda gösterir.
+Ayrıca uygulama açıldığı andan itibaren ulaşılmış en yüksek hız değerini de gösterir.
+
+
+ */
 
 class Speedometer extends StatelessWidget {
   const Speedometer({

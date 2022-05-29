@@ -4,6 +4,13 @@ import '../weather_data/weather_result.dart';
 import '../weather_data/weather_use_case.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+
+/*
+
+Hava durumları için yardımcı sınıflar.
+
+ */
+
 class CurrentWeatherPage extends StatefulWidget {
 
   final WeatherUseCase weatherUseCase;

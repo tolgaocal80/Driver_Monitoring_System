@@ -1,3 +1,11 @@
+
+/*
+
+Hava durumu model sınıfı
+
+
+ */
+
 class Weather {
     
     final String name;

@@ -4,6 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/fire_auth.dart';
 import '../utils/validator.dart';
 
+/*
+Yeni kullanıcıların kayıt olmaları için oluşturulan kayıt ol ekranı.
+ */
+
+
 class RegisterPage extends StatefulWidget {
   @override
   _RegisterPageState createState() => _RegisterPageState();

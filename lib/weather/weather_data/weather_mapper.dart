@@ -1,5 +1,14 @@
 import 'weather.dart';
 
+/*
+
+Kullandığımız OpenWeather API den gelen verileri düzenlemek için oluşturulan yardımcı sınıf.
+Web sitesinden gelen verileri düzenler, istenilen formata getirir.
+
+
+ */
+
+
 class WeatherMapper {
   
   static Weather map(Map<String, dynamic> json) {

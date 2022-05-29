@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+/*
+
+Hız göstergesini seslendirmek için kullanılan "Text to Speak" motorunu başlatan sınıftır.
+
+ */
+
+
 class TextToSpeechSettingsForm extends StatelessWidget {
   const TextToSpeechSettingsForm({
     required this.isTTSActive,

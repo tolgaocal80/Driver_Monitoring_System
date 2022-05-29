@@ -3,6 +3,19 @@ import 'package:driver_monitoring_system/weather/common/date_formatter.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+/*
+
+Uygulamada bir kere oturum açıldıktan sonra ve bir kullanıcı nesnesi oluşturulduktan sonra
+sürekli bu nesne üzerinden işlem yapılması gerektiği için ve gereksiz hafıza kullanımının önüne geçilmek
+istendiğinden programlama tasarım kalıplarından (design patterns) sık kullanılan 'Singleton' kalıbı kullanılmıştır. Bu sınıfta bu işlemin
+yapıldığı belirtilmiştir.
+
+- Her yerden erişibilen tek (single) DatabaseReference nesnesi (Firebase Realtime Database nesnesi) ve
+- Uygulama genelinde kullanılan 'CarUser' sınıfından 'carUser' nesnesi oluşturulmuştur.
+
+ */
+
+
 class SingleCarUser {
 
   static SingleCarUser _instance = SingleCarUser._();

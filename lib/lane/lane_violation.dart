@@ -4,6 +4,18 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+/*
+LaneCheck sınıfı, Raspberry Pi cihazı üzerine bağlanmış olan ultrasonik yakınlık sensörlerinden
+gelen verileri değenlendirir ve aracın hangi tarafında (sağ yada sol) engel (araç, yaya)
+olduğunu mobil uygulama üzerinde anlık olarak gösterir, bunu Google şirketi tarafından sunulan NoSQL tabanlı
+veritabanı Firebase Realtime Database şeklinde gerçekleştirmekteyiz. Veritabanına yapılan bütün değişiklikler
+anlık olarak uygulamaya yansır. Bu, şerit değiştirirken yaşanabilecek kazaları engellenmeye yardımcı olur.
+
+Uygulama ekranında sağ ikaz ve sol ikaz olarak görünür.
+
+
+ */
+
 class LaneCheck extends StatefulWidget {
   const LaneCheck({Key? key}) : super(key: key);
 

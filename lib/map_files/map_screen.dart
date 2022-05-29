@@ -2,6 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'map_widget.dart';
 
+/*
+
+Harita ekranını oluşturan yardımcı sınıf.
+
+
+ */
+
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
 

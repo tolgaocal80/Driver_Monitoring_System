@@ -8,6 +8,13 @@ import 'map_widget.dart';
 
 MapWidget getMapWidget() => WebMap();
 
+/*
+
+Web arayüzü için oluşturulan harita sınıfı.
+
+
+ */
+
 class WebMap extends StatefulWidget implements MapWidget {
   WebMap({Key? key}) : super(key: key);
 
@@ -16,6 +23,7 @@ class WebMap extends StatefulWidget implements MapWidget {
 }
 
 class WebMapState extends State<WebMap> {
+
   @override
   Widget build(BuildContext context) {
     final String htmlId = "map";

@@ -1,5 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+/*
+Firebase kullanıcı kayıt ve girişinin kontrolünü sağlayan sınıf. Şifre kontrolü ve kullanıcı girişinde olabilecek bazı hataları bildirir.
+ */
+
+
 class FireAuth {
   // For registering a new user
   static Future<User?> registerUsingEmailPassword({
@@ -23,6 +28,7 @@ class FireAuth {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
+
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
       }
@@ -32,6 +38,8 @@ class FireAuth {
 
     return user;
   }
+
+
 
   // For signing in an user (have already registered)
   static Future<User?> signInUsingEmailPassword({

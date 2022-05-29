@@ -7,6 +7,12 @@ import 'forecast.dart';
 import 'weather_result.dart';
 import 'package:location/location.dart';
 
+/*
+
+Hava durumu için yardımcı sınıflar
+
+ */
+
 abstract class WeatherService {
   Future<Weather> get(double lat, double lon);
 }

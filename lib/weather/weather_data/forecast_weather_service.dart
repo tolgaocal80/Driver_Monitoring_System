@@ -5,6 +5,14 @@ import 'forecast.dart';
 import 'weather_use_case.dart';
 import 'weather_mapper.dart';
 
+/*
+
+Hava durumu için yardımcı sınıflar
+
+
+ */
+
+
 class OpenWeatherForecastService implements ForecastService {
 
   final String _endpoint;

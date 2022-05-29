@@ -3,9 +3,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
+import 'login/screens/login_page.dart';
 import 'map_files/map_screen.dart';
 import 'weather/weather_data/weather_use_case.dart';
 import 'weather/weather_widgets/current_weather_widget.dart';
+
+
+/*
+
+Uygulama anasayfası. Bilgiler ekranı ile başlar.
+
+ */
+
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage(User user, {Key? key}) : super(key: key);
@@ -41,6 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         )) ?? false;
   }
+  bool _isSigningOut = false;
 
   User carUser = FirebaseAuth.instance.currentUser!;
   late WeatherUseCase useCase;
@@ -50,7 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     useCase = WeatherBuilder().build();
-
   }
 
   @override
@@ -70,7 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
         drawer:Drawer(
           child: ListView(
-            // Important: Remove any padding from the ListView.
             padding: EdgeInsets.zero,
             children: [
                DrawerHeader(
@@ -78,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.blue,
                 ),
                 child: carUser.displayName!=null ? Text(carUser.displayName.toString().toUpperCase() +
-                    '\n'+ carUser.email.toString()) : const Text("Tolga OCAL")
+                    '\n'+ carUser.email.toString()) : Text(carUser.displayName.toString())
               ),
               ListTile(
                 leading: Icon(
@@ -98,6 +106,31 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.pop(context);
                 },
               ),
+
+        Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(height: 16.0),
+            _isSigningOut ? const CircularProgressIndicator()
+                : ElevatedButton(onPressed: () async {
+                  setState(() {
+                    _isSigningOut = true;
+                  });
+                  await FirebaseAuth.instance.signOut();
+
+                  setState(() {
+                    _isSigningOut = false;
+                  });
+                  Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (context) => LoginPage()));
+                  },
+              child: Text('Çıkış Yap'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+              ),
+            )],
+        )
             ],
           ),
         ),

@@ -15,6 +15,124 @@ import 'package:google_fonts/google_fonts.dart';
 import '../speedometer/dash_screen.dart';
 import '../user_dao/car_user.dart';
 
+
+/*
+
+WeatherHomePage sınıfı birçok fonksiyonu içerisinde barındırır:
+
+Uygulamada gösterilen özelliklerde kullanılan veriler, uygulamaya Firebase Realtime Database üzerinden gelmektedir. Herhangi bir değişim direkt
+olarak uygulamaya yansıtılır ve bu sayede anlık değişimler ekranda gösterilir.
+
+1- Raspberry Pi'den gelen kullanıcı konumunu ve bilgilerini kullanarak sürücünün bulunduğu konumdaki günlük ve 3 günlük hava durumu bilgilerini ekranda gösterir.
+
+2- Database den gelen verilere göre sürücünün bulunduğu son konum ekranda, metin olarak gösterilir. Ayrıca bu konum her 20 saniyede güncellenir.
+Güncelleme yapılırken en son gelen veriden alınan 'time' (Raspberry Pi den gönderilme zamanı, gönderilirken veriler arasına eklenir) bilgisi ile
+şu anki zaman kıyaslanır ve arada 20 saniye fark varsa ekranda yer alan son konum güncellenir. Database'ye gönderilen veriler arasında konum bilgileri ve
+zaman değerleri aynı anda gönderildiği için hangi zamanda nerede olunduğu kesin olarak bilinebilir.
+
+3- Azami Fren mesafesi fonksiyonu, sürücünün hız bilgisini ve karşısına çıkan tehdide karşı göstereceği ortalama tepki süresini kullanarak,
+şu anki hızında seyir halinde iken olası acil durum freninde aracın ortalama ne kadar mesafe sonra tam olarak duracağını hesaplayan bir fonksiyondur.
+
+
+Durma mesafesi, fren mesafesinden oldukça uzundur. Tehlike algılandığında başlar ve araç
+durduğunda sona erer. Bu nedenle tepki mesafesi ve fren mesafesi toplamlarından oluşur.
+Gerekli durma mesafesini hesaplamak için bu iki değerin toplanması gerekir.
+
+Tepki mesafesi:
+
+Reaksiyon mesafesi şunlardan etkilenir:
+
+-Arabanın hızı (oransal artış):
+2 x daha yüksek hız = 2 x daha uzun reaksiyon mesafesi.
+5 x daha yüksek hız = 5 x daha uzun reaksiyon mesafesi.
+-Tepki süreniz
+    -Normalde 0,5–2 saniye.
+    -45-54 yaşındakiler trafikte en iyi tepki süresine sahiptir.
+    -18-24 yaşındakiler ve 60 yaşın üzerindekiler trafikte aynı tepki süresine sahip.
+    Gençlerin daha keskin duyuları var ama yaşlıların daha fazla deneyimi var.
+
+Reaksiyon mesafesi şu şekilde azaltılabilir:
+-Tehlikelerin öngörülmesi.
+-Hazırlık
+
+Reaksiyon mesafesi şu şekilde artırılabilir:
+
+-Karar verme gerekliliği (örneğin, fren yapmak veya yoldan çıkmak arasında).
+-Alkol, uyuşturucu ve ilaç.
+-Yorgunluk.
+
+
+Reaksiyon mesafesini hesaplama:
+
+Formül: d = (s * r) / 3.6
+
+d = metre cinsinden tepki mesafesi (hesaplanacak).
+s = km/h cinsinden hız.
+r = saniye cinsinden tepki süresi.
+3.6 = km/s'yi m/s'ye dönüştürmek için sabit rakam.
+
+50 km/s hız ve 1 saniye tepki süresi ile hesaplama örneği:
+
+(50 * 1) / 3.6 = 13,9 metre reaksiyon mesafesi.
+
+Fren mesafesi:
+
+Fren mesafesi, frene başladığınız andan araç durana kadar aracın kat ettiği mesafedir.
+
+Fren mesafesi şunlardan etkilenir:
+
+-Aracın hızı (kuadratik artış; "2'nin üssü ile yükselir"):
+-2 kat daha yüksek hız = 4 kat daha uzun fren mesafesi.
+-3 kat daha yüksek hız = 9 kat daha uzun fren mesafesi.
+-Yol (gradyan ve koşullar).
+-Yük.
+-Frenler (durum, frenleme teknolojisi ve kaç tekerleğin fren yaptığı).
+
+
+Fren mesafesini hesaplama
+
+Yol koşulları ve lastiklerin tutuşu büyük ölçüde değişebileceğinden, güvenilir fren mesafesi hesaplamaları yapmak çok zordur.
+Örneğin yolda buz olduğunda fren mesafesi 10 kat daha uzun olabilir.
+
+
+Fren mesafesini hesaplayın
+
+Koşullar: İyi lastikler ve iyi frenler.
+
+Formül: d = s2 / (250 * f)
+
+d = metre cinsinden fren mesafesi (hesaplanacak).
+s = km/h cinsinden hız.
+250 = her zaman kullanılan sabit rakam.
+f = sürtünme katsayısı, yakl. 0,8 kuru asfaltta ve 0,1 buzda.
+
+Kuru asfaltta 50 km/s hızla hesaplama örneği:
+
+(50^2) / (250 * 0.8) = 12,5 metre fren mesafesi
+
+
+Durma mesafesi:
+
+Durma mesafesi = tepki mesafesi + fren mesafesi
+
+
+Fonksiyonda aşağıdaki gibi iyi bir tahmin ile fren mesafesi hesaplanmıştır.
+
+int breakingDistance = ((speedKm/3.6) + ((speedKm * speedKm) / (250 * 0.8))).toInt();
+
+
+
+
+KAYNAK:
+
+https://korkortonline.se/en/theory/reaction-braking-stopping/
+https://mobilityblog.tuv.com/en/calculating-stopping-distance-braking-is-not-a-matter-of-luck/
+
+
+ */
+
+
+
 class WeatherHomePage extends StatefulWidget {
    WeatherHomePage( {Key? key, required this.weatherResult}) : super(key: key);
 
@@ -331,7 +449,6 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                           ),
                         ),
 
-
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: size.width * 0.008, vertical: size.width * 0.008,),
                           child: Column(
@@ -358,7 +475,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                         stream: _velocityUpdatedStreamController.stream,
                                         builder: (BuildContext context, AsyncSnapshot<double?> snapshot) {
                                           double speedKm = (snapshot.data! * 18 / 5);
-                                          int breakingDistance = ((speedKm/3.6) + ((speedKm/10)*(speedKm/10)*0.4)).toInt();
+                                          int breakingDistance = ((speedKm/3.6) + ((speedKm * speedKm) / (250 * 0.8))).toInt();
                                           return Text(
                                               breakingDistance.toString(),
                                               style: const TextStyle(color: Colors.teal, fontSize: 36)
@@ -551,7 +668,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                   left: size.width * 0.03,
                                 ),
                                 child: Text(
-                                  '5 Günlük tahminler',
+                                  '3 Günlük tahminler',
                                   style: GoogleFonts.questrial(
                                     color: isDarkMode
                                         ? Colors.white
@@ -706,6 +823,8 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       );
   }
 
+
+  // Ekranda gösterilen 3 günlük hava durumu bilgilerini oluşturan fonksiyon
   Widget buildSevenDayForecast(String time, int minTemp, int maxTemp,
       String weatherIcon, size, bool isDarkMode) {
 
@@ -778,7 +897,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
     );
   }
 
-
+// Ekranda gösterilen anlık hava durumu bilgilerini oluşturan fonksiyon
   Widget buildForecastToday(String time, int temp, int wind, int rainChance,
       String weatherIcon, size, bool isDarkMode) {
     return Padding(

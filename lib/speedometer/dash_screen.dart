@@ -8,6 +8,16 @@ import 'components/tts_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
+/*
+
+Hız göstergesi için yardımcı sınıf.
+Hızdaki değişimleri gps üzerinden sürekli dinleyerek uygulamaya bildirir. Bu sayede ekran yenilenir ve yeni hız değerleri ekranda gösterilir.
+
+
+ */
+
+
+
 class DashScreen extends StatefulWidget {
   DashScreen({Key? key}) : super(key: key);
   @override

@@ -1,3 +1,10 @@
+
+/*
+
+Kullanıcı kayıt yaparken yada giriş yaparken, belirlenen şifrenin ve emailin istenilen formatta olup olmadığını kontrol eder.
+
+ */
+
 class Validator {
   static String? validateName({required String? name}) {
     if (name == null) {
