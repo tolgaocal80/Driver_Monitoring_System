@@ -219,7 +219,7 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
                       onPressed: () {
                         _setMapType();
                   //      updateUserData(latitude: position.latitude.toString(), longitude: position.longitude.toString(), status: "false", leftWarning: "false", rightWarning: "false");
-                        saveData(latitude: position.latitude.toString(), longitude: position.longitude.toString(), rightWarning: "false", leftWarning: "false", status: "true");
+                  //      saveData(latitude: position.latitude.toString(), longitude: position.longitude.toString(), rightWarning: "false", leftWarning: "false", status: "true");
                       },
                     ),
                   ),
