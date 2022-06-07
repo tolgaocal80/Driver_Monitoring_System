@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
 
                           Text(
                             'Giriş Yapın',
-                            style: Theme.of(context).textTheme.headline1,
+                            style: Theme.of(context).textTheme.headline3,
                           ),
 
                         ],
@@ -147,7 +147,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin{
                                             .pushReplacement(
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                MyHomePage(user!),
+                                                MyHomePage(user),
                                           ),
                                         );
                                       }

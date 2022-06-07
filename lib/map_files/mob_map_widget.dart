@@ -84,7 +84,7 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     carUser.leftWarning = leftWarning;
     carUser.rightWarning = rightWarning;
 
-    await reference.child('users/${carUser.uid}').push().set(carUser.toJson());
+    await reference.child('users/${carUser.uid}').set(carUser.toJson());
   }
 
   Future<void> updateUserData({required String latitude, required String longitude,
@@ -218,7 +218,8 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
                       backgroundColor: _mapButtonsColor,
                       onPressed: () {
                         _setMapType();
-                        updateUserData(latitude: position.latitude.toString(), longitude: position.longitude.toString(), status: "false", leftWarning: "false", rightWarning: "false");
+                  //      updateUserData(latitude: position.latitude.toString(), longitude: position.longitude.toString(), status: "false", leftWarning: "false", rightWarning: "false");
+                        saveData(latitude: position.latitude.toString(), longitude: position.longitude.toString(), rightWarning: "false", leftWarning: "false", status: "true");
                       },
                     ),
                   ),

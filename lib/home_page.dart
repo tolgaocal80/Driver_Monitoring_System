@@ -2,6 +2,7 @@ import 'package:driver_monitoring_system/weather/weather_data/weather_builder.da
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'login/screens/login_page.dart';
 import 'map_files/map_screen.dart';
@@ -64,6 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     return WillPopScope(
 
@@ -163,12 +167,47 @@ class _MyHomePageState extends State<MyHomePage> {
             MapScreen(),
             CurrentWeatherPage(weatherUseCase: useCase,),
             Center(
-              child: Text(" Kamera ekranı"),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                  color: Colors.black.withOpacity(0.075),
+                ),
+                  child: Center(
+                    child: TextButton(
+                      child: Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                          color: Colors.black26
+                        ),
+                        height: height * 0.075,
+                        width: width * 0.5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.camera, color: Colors.blue),
+                            VerticalDivider(width: 5, thickness: 1,),
+                            Text("Kamerayı Aç", style: GoogleFonts.questrial(
+                              color: Colors.white54, fontSize: height * 0.035)
+                            )
+                          ],
+                        ),
+                      ),
+
+                      onPressed: (){
+                        // Kamera yayınına bağlan
+                      },
+
+                    ),
+                  )
+                )
             )
           ],
         ),
       ),
-
     );
   }
 }
