@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:driver_monitoring_system/lane/lane_violation.dart';
 import 'package:driver_monitoring_system/pythonComponents/single_caruser.dart';
 import 'package:driver_monitoring_system/weather/common/date_formatter.dart';
@@ -14,7 +13,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../speedometer/dash_screen.dart';
 import '../user_dao/car_user.dart';
-
 
 /*
 
@@ -132,7 +130,6 @@ https://mobilityblog.tuv.com/en/calculating-stopping-distance-braking-is-not-a-m
  */
 
 
-
 class WeatherHomePage extends StatefulWidget {
    WeatherHomePage( {Key? key, required this.weatherResult}) : super(key: key);
 
@@ -144,33 +141,19 @@ class WeatherHomePage extends StatefulWidget {
 
 class _WeatherHomePageState extends State<WeatherHomePage> {
 
-  GeolocatorPlatform geolocator= GeolocatorPlatform.instance;
   late Position currentPosition;
-  late String locationAddress = "";
-  late List<Placemark> placemarks;
+  String locationAddress = "";
+  List<Placemark> placemarks = [];
   CarUser carUser = SingleCarUser.instance.carUser;
   Placemark place = Placemark();
+  double speedKm = 0;
+  int breakingDistance = 0;
 
-  late StreamController<double?> _velocityUpdatedStreamController;
-  // For velocity Tracking
-  /// Geolocator is used to find velocity
-  GeolocatorPlatform locator = GeolocatorPlatform.instance;
-  double? _velocity;
+  DatabaseReference reference = SingleCarUser.instance.ref;
 
   @override
   void initState() {
     super.initState();
-
-    // Speedometer functionality. Updates any time velocity changes.
-    _velocityUpdatedStreamController = StreamController<double?>();
-
-    locator.getPositionStream(locationSettings: const LocationSettings(accuracy: LocationAccuracy.bestForNavigation))
-        .listen((position) {
-      _velocity =  ( (position.speed * 18) / 5 );
-      _velocityUpdatedStreamController.add(_velocity);
-    });
-
-    DatabaseReference reference = SingleCarUser.instance.ref;
 
     reference.child("users/${carUser.uid}").onValue.listen((DatabaseEvent event) {
 
@@ -179,50 +162,31 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
       }
 
       SingleCarUser.instance.carUser = CarUser.fromDataSnapshot(event.snapshot);
+
       CarUser user = SingleCarUser.instance.carUser;
 
       // FOR DEBUG PURPOSES
       print("USER DATA ( LATITUDE ) : " + user.latitude);
       print("USER DATA ( LONGITUDE ) : " + user.longitude);
       print("USER DATA ( UID ) : " + user.uid);
+      print("USER DATA ( SPEED ) : " + user.gpsSpeed);
 
-      var difference = DateTime.now().difference(DateTime.parse(user.time));
+      locationAddress = "";
+      var lat = double.parse(user.latitude);
+      var longitude = double.parse(user.longitude);
 
-      if(difference.inSeconds > 20){
+      placemarkFromCoordinates(lat,longitude).then((value) => placemarks = value);
 
-        locationAddress = "";
-        var lat = double.parse(user.latitude);
-        var longitude = double.parse(user.longitude);
+      place = placemarks[0];
 
-        placemarkFromCoordinates(lat,longitude).then((value) => placemarks = value);
-
-        place = placemarks[0];
-
-        setState(() {
-          locationAddress = "${place.thoroughfare}, ${place.subLocality}\n"
-              "${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
-        });
-      }
+      setState(() {
+        speedKm = (double.parse(user.gpsSpeed) * 3.6);
+        breakingDistance = ( (speedKm/3.6) + ((speedKm * speedKm) / (250 * 0.8)) ).toInt();
+        locationAddress = "${place.thoroughfare}, ${place.subLocality}\n"
+            "${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
+      });
 
     });
-
-    /*
-    geolocator.getPositionStream(locationSettings: const LocationSettings(timeLimit: Duration(seconds: 3)))
-        .listen((position) async {
-
-          currentPosition = position;
-          placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-          Placemark place = placemarks[0];
-
-          setState(() {
-            locationAddress = "${place.thoroughfare}, ${place.subLocality}\n"
-                "${place.subAdministrativeArea}, ${place.administrativeArea}, ${place.country}";
-          });
-
-    },
-    );
-
-     */
 
   }
 
@@ -329,7 +293,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                 child: Column(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(
+                                      padding: const EdgeInsets.only(
                                         top: 10,
                                       ),
                                       child: Align(
@@ -471,18 +435,10 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                       Divider(
                                         color: Colors.white,
                                       ),
-                                      StreamBuilder<double?>(
-                                        stream: _velocityUpdatedStreamController.stream,
-                                        builder: (BuildContext context, AsyncSnapshot<double?> snapshot) {
-                                          double speedKm = (snapshot.data! * 18 / 5);
-                                          int breakingDistance = ((speedKm/3.6) + ((speedKm * speedKm) / (250 * 0.8))).toInt();
-                                          return Text(
-                                              breakingDistance.toString(),
-                                              style: const TextStyle(color: Colors.teal, fontSize: 36)
-                                          );
-                                        },
-                                        initialData: 0.0,
-                                        )
+                                      Text(
+                                          breakingDistance.toString(),
+                                          style: const TextStyle(color: Colors.teal, fontSize: 36)
+                                      )
                                     ],
                                   )
                               ),

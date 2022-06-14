@@ -31,6 +31,7 @@ class _LaneCheckState extends State<LaneCheck> {
   @override
   void initState(){
     super.initState();
+
     DatabaseReference reference = SingleCarUser.instance.ref;
     CarUser usr = SingleCarUser.instance.carUser;
 
@@ -90,13 +91,13 @@ class _LaneCheckState extends State<LaneCheck> {
                     // LEFT WARNING ICON
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Icon(Icons.warning_amber_outlined, color: leftLaneText == "true" ? Colors.redAccent : Colors.black, size: 40),
+                      child: Icon(Icons.warning_amber_outlined, color: leftLaneText == "True" ? Colors.redAccent : Colors.black, size: 40),
                     ),
 
                     // RIGHT WARNING ICON
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Icon(Icons.warning_amber_outlined, color: rightLaneText == "true" ? Colors.redAccent : Colors.black, size: 40),
+                      child: Icon(Icons.warning_amber_outlined, color: rightLaneText == "True" ? Colors.redAccent : Colors.black, size: 40),
                     ),
 
                   ],

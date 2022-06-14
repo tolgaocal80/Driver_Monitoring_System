@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:geolocator/geolocator.dart';
+import '../pythonComponents/single_caruser.dart';
+import '../user_dao/car_user.dart';
 import 'components/speedometer.dart';
 import 'components/tts_form.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,10 +14,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 Hız göstergesi için yardımcı sınıf.
 Hızdaki değişimleri gps üzerinden sürekli dinleyerek uygulamaya bildirir. Bu sayede ekran yenilenir ve yeni hız değerleri ekranda gösterilir.
 
-
  */
-
-
 
 class DashScreen extends StatefulWidget {
   DashScreen({Key? key}) : super(key: key);
@@ -30,10 +28,10 @@ class DashScreenState extends State<DashScreen> {
   /// Initiate service
   late FlutterTts _ttsService;
 
-  /// Create a stream trying to speak speed
+  // Create a stream trying to speak speed
   StreamSubscription? _ttsCallback;
 
-  /// String that the tts will read aloud, Speed + Expanded Unit
+  // String that the tts will read aloud, Speed + Expanded Unit
   String get speakText {
     String unit = 'kilometre per hour';
     return '${_velocity!.toStringAsFixed(2)} $unit';
@@ -53,7 +51,7 @@ class DashScreenState extends State<DashScreen> {
         );
   }
 
-  /// Should TTS be talking
+  // Should TTS be talking
   bool _isTTSActive = false;
 
   void setIsActive(bool isActive) => setState(
@@ -73,43 +71,46 @@ class DashScreenState extends State<DashScreen> {
     },
   );
 
-  /// TTS talk duration
+  // TTS talk duration
   final Duration _ttsDuration = const Duration(seconds: 9);
 
-  // For velocity Tracking
-  /// Geolocator is used to find velocity
-  GeolocatorPlatform locator = GeolocatorPlatform.instance;
-
-  /// Stream that emits values when velocity updates
-  late StreamController<double?> _velocityUpdatedStreamController;
-
-  /// Current Velocity in km/h
+  // Current Velocity in km/h
   double? _velocity;
 
-  /// Highest recorded velocity so far in m/s.
+  // Highest recorded velocity so far.
   double? _highestVelocity;
 
   @override
   void initState() {
     super.initState();
 
-    // Speedometer functionality. Updates any time velocity changes.
-    _velocityUpdatedStreamController = StreamController<double?>();
-    // Speedometer functionality. Updates any time velocity chages.
-    _velocityUpdatedStreamController = StreamController<double?>();
-    locator
-        .getPositionStream(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.bestForNavigation,
-      ),
-    )
-        .listen(
-          (Position position) => _onAccelerate(position.speed),
-    );
-
     // Set velocities to zero when app opens
     _velocity = 0;
     _highestVelocity = 0.0;
+
+    DatabaseReference reference = SingleCarUser.instance.ref;
+    CarUser usr = SingleCarUser.instance.carUser;
+
+    reference.child("users/${usr.uid}").onValue.listen((DatabaseEvent event) {
+
+      if(!event.snapshot.exists){
+        print("FIREBASE STORAGE EXCEPTION");
+      }
+
+    //  SingleCarUser.instance.carUser = CarUser.fromDataSnapshot(event.snapshot);
+
+      CarUser user = SingleCarUser.instance.carUser;
+
+      var speedInKm = mpstokmph(double.parse(user.gpsSpeed));
+
+      print("SPEED METER UPDATED");
+
+      setState(() {
+        _velocity = speedInKm;
+        if (_velocity! > _highestVelocity!) _highestVelocity = _velocity;
+      });
+
+    });
 
     // Set up tts
     _ttsService = FlutterTts();
@@ -127,17 +128,6 @@ class DashScreenState extends State<DashScreen> {
 
   /// Velocity in m/s to km/hr converter
   double mpstokmph(double mps) => mps * 18 / 5;
-
-  /// Callback that runs when velocity updates, which in turn updates stream.
-  void _onAccelerate(double speed) {
-    locator.getCurrentPosition().then(
-          (Position updatedPosition) {
-        _velocity = (mpstokmph(speed) + mpstokmph(updatedPosition.speed)) / 2;
-        if (_velocity! > _highestVelocity!) _highestVelocity = _velocity;
-        _velocityUpdatedStreamController.add(_velocity);
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -162,28 +152,25 @@ class DashScreenState extends State<DashScreen> {
             padding: EdgeInsets.zero,
 
             children: [
-              // StreamBuilder updates Speedometer when new velocity received
-              StreamBuilder<Object?>(
-                stream: _velocityUpdatedStreamController.stream,
-                builder: (context, snapshot) {
-                  return Container(
-                    width: width,
-                    height: width,
-                    padding: EdgeInsets.zero,
-                    margin: EdgeInsets.zero,
-                    child: Speedometer(
-                      gaugeBegin: gaugeBegin,
-                      gaugeEnd: gaugeEnd,
-                      velocity: (_velocity!),
-                      maxVelocity: (_highestVelocity!),
-                    ),
-                  );
-                },
+
+              Container(
+                width: width,
+                height: width,
+                padding: EdgeInsets.zero,
+                margin: EdgeInsets.zero,
+                child: Speedometer(
+                  gaugeBegin: gaugeBegin,
+                  gaugeEnd: gaugeEnd,
+                  velocity: (_velocity!),
+                  maxVelocity: (_highestVelocity!),
+                ),
               ),
+
               TextToSpeechSettingsForm(
                 isTTSActive: _isTTSActive,
                 activeSetter: setIsActive,
               ),
+
             ],
           )
       ),
@@ -193,8 +180,6 @@ class DashScreenState extends State<DashScreen> {
 
   @override
   void dispose() {
-    // Velocity Stream
-    _velocityUpdatedStreamController.close();
     // TTS
     _ttsCallback!.cancel();
     _ttsService.stop();

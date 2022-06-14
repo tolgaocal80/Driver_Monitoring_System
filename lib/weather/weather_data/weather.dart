@@ -1,9 +1,5 @@
-
 /*
-
 Hava durumu model sınıfı
-
-
  */
 
 class Weather {

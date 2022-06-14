@@ -14,6 +14,9 @@ Araç kullanıcı modeli. Burada bir araç sürücüsü verisinin neler içerdi�
    String leftWarning --> Kullanıcının sol tarafındaki yakınlık sensörü değerini temsil eder.
    String rightWarning  --> Kullanıcının sağ tarafındaki yakınlık sensörü değerini temsil eder.
 
+   // update added gps speed value
+   String gpsSpeed --> Raspberry GPS modülünden gelen 'speed' değeri
+
 Herhangi bir kullanıcı verisi güncellendiğinde, bu sınıf ile yeni kullanıcı oluşturulabilir
 ya da mevcut kullanıcı güncellenir.
 
@@ -29,11 +32,13 @@ class CarUser {
    String uid;
    String leftWarning;
    String rightWarning;
+   String gpsSpeed;
 
-  CarUser(this.latitude, this.longitude, this.status, this.time, this.uid, this.leftWarning, this.rightWarning);
+  CarUser(this.gpsSpeed,this.latitude, this.longitude, this.status, this.time, this.uid, this.leftWarning, this.rightWarning);
 
   CarUser.fromJson(Map<String, dynamic> json)
-      : latitude = json['latitude'],
+      : gpsSpeed = json['gpsSpeed'],
+        latitude = json['latitude'],
         longitude = json['longitude'],
         status = json['status'],
         time = json['time'],
@@ -42,7 +47,7 @@ class CarUser {
         rightWarning = json['rightWarning'];
 
   CarUser.fromDataSnapshot(DataSnapshot snapshot)
-      :
+      : gpsSpeed = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['gpsSpeed'],
         latitude = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['latitude'],
         longitude = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['longitude'],
         status = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['status'],
@@ -52,6 +57,7 @@ class CarUser {
         rightWarning = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['rightWarning'];
 
   Map<String, dynamic> toJson() => {
+    'gpsSpeed': gpsSpeed,
     'latitude': latitude,
     'longitude': longitude,
     'status': status,
@@ -63,7 +69,7 @@ class CarUser {
 
    @override
    String toString() {
-     return ('{uid: $uid, status: $status, time: $time, latitude: $latitude, longitude: $longitude, leftWarning: $leftWarning, rightWarning: $rightWarning}');
+     return ('{uid: $uid, status: $status, time: $time, latitude: $latitude, longitude: $longitude, speed: $gpsSpeed, leftWarning: $leftWarning, rightWarning: $rightWarning}');
    }
 
 }

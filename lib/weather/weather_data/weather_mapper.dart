@@ -16,7 +16,7 @@ class WeatherMapper {
     Map<String, dynamic> main = json['main'];
     Map<String, dynamic> wind = json['wind'];
     final timestamp = json['dt'];
-    DateTime dateTime = new DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
+    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp * 1000);
     return Weather(
       name: json['name'] != null ? json['name'] : "",
       description: weather['description'],
@@ -30,8 +30,5 @@ class WeatherMapper {
       dateTime: dateTime
     );
   }
-
-
-
 
 }

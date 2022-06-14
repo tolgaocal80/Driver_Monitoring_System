@@ -12,16 +12,14 @@ Hava durumu için yardımcı sınıflar
 
  */
 
-
 class WeatherBuilder {
   
   WeatherUseCase build() {
-    Location location = Location();
     Client client = Client();
 
     OpenWeatherCurrentService weatherService = OpenWeatherCurrentService(client, Constants.endpoint, Constants.appId);
     OpenWeatherForecastService forecastService = OpenWeatherForecastService(client, Constants.endpoint, Constants.appId);
-    WeatherUseCase useCase = WeatherUseCase(location, weatherService, forecastService);
+    WeatherUseCase useCase = WeatherUseCase(weatherService, forecastService);
     
     return useCase;
   }

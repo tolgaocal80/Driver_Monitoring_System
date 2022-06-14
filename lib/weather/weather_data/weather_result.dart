@@ -5,7 +5,6 @@ import 'forecast.dart';
 
 Hava durumu için yardımcı sınıflar
 
-
  */
 
 class WeatherResult {

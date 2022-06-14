@@ -15,7 +15,7 @@ class DateFormatter {
   }
 
   static String dateTime(DateTime dt) {
-    DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+    DateFormat formatter = DateFormat('dd/MM/yy HH:mm');
     return formatter.format(dt);
   }
   

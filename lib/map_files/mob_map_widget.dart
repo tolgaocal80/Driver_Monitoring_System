@@ -158,11 +158,13 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
       print("USER DATA ( LATITUDE ) : " + user.latitude);
       print("USER DATA ( LONGITUDE ) : " + user.longitude);
       print("USER DATA ( UID ) : " + user.uid);
+      print("USER DATA ( SPEED ) : " + user.gpsSpeed);
 
       setState(() {
         _markers.clear();
         _markers.add(createCarLocationMarker(user));
       });
+
     });
 
   }

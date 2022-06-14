@@ -23,11 +23,10 @@ abstract class ForecastService {
 
 class WeatherUseCase {
 
-  Location _location;
   WeatherService _weatherService;
   ForecastService _forecastService;
 
-  WeatherUseCase(this._location, this._weatherService, this._forecastService);
+  WeatherUseCase(this._weatherService, this._forecastService);
 
   DatabaseReference reference = SingleCarUser.instance.ref;
 
@@ -41,13 +40,5 @@ class WeatherUseCase {
     return Future.value(WeatherResult(weather: weather, forecast: forecast));
   }
 
-  Future<WeatherResult> get() async {
-
-    LocationData data = await _location.getLocation();
-
-    Weather weather = await _weatherService.get(data.latitude!, data.longitude!);
-    Forecast forecast = await _forecastService.get(data.latitude!, data.longitude!);
-    return Future.value(WeatherResult(weather: weather, forecast: forecast));
-  }
 
 }

@@ -7,7 +7,6 @@ Hız göstergesi ekranı.
 Kullanıcı hız değerlerini sürekli olarak dinler ve hızdaki değişimi ekranda gösterir.
 Ayrıca uygulama açıldığı andan itibaren ulaşılmış en yüksek hız değerini de gösterir.
 
-
  */
 
 class Speedometer extends StatelessWidget {

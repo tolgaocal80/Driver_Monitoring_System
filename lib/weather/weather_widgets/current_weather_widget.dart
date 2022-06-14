@@ -6,9 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
 /*
-
 Hava durumları için yardımcı sınıflar.
-
  */
 
 class CurrentWeatherPage extends StatefulWidget {
@@ -33,7 +31,7 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
   Widget build(BuildContext context) {    
     return RefreshIndicator(
         child: FutureBuilder<WeatherResult>(
-          future: widget.weatherUseCase.get(),
+          future: widget.weatherUseCase.getFromCarLocation(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               weatherResult = snapshot.data!;
@@ -47,7 +45,11 @@ class _CurrentWeatherPageState extends State<CurrentWeatherPage> {
           },
         ),
         onRefresh: () async {
-          await widget.weatherUseCase.get().then((value) => weatherResult = value);
+          await widget.weatherUseCase.getFromCarLocation().then((value) =>
+              setState(() {
+                weatherResult = value;
+              })
+          );
         }
     );
 
