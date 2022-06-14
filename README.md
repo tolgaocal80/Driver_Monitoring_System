@@ -2,6 +2,6 @@
 
 Driver drowsiness detection and monitoring system android application.
 
-![](https://github.com/tolgaocal80/Driver_Monitoring_System/blob/master/ezgif.com-gif-maker%20(1).mp4)
+![](https://github.com/tolgaocal80/Driver_Monitoring_System/blob/master/ezgif.com-gif-maker.gif)
 
 
