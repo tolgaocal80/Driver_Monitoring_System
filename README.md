@@ -6,5 +6,5 @@ The number of vehicles is increasing day by day, and the increase in unconscious
 
 
 # Screenshots
-![](https://i.ibb.co/TqdmqYY/sshot-4.png) 
+![](https://github.com/tolgaocal80/Driver_Monitoring_System/blob/master/sshot-4.png) 
 
