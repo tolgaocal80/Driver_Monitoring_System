@@ -22,7 +22,7 @@ class SingleCarUser {
   SingleCarUser._();
   static SingleCarUser get instance => _instance;
   
-  CarUser carUser = CarUser("0.0","41.029112", "28.890270", "false", DateFormatter.dateTime(DateTime.now()), "TX3SudStPQSDPViRvZ9kaOlmw4H2", "false", "false");
+  CarUser carUser = CarUser("False","0.0","41.029112", "28.890270", "false", DateFormatter.dateTime(DateTime.now()), "TX3SudStPQSDPViRvZ9kaOlmw4H2", "False", "False");
 
   DatabaseReference ref = FirebaseDatabase.instanceFor(app: Firebase.app(),databaseURL: "https://ytu-surucu-destek-sistemi-default-rtdb.europe-west1.firebasedatabase.app").ref();
 

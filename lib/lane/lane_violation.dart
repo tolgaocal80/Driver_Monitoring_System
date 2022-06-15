@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:driver_monitoring_system/pythonComponents/single_caruser.dart';
 import 'package:driver_monitoring_system/user_dao/car_user.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -28,6 +29,21 @@ class _LaneCheckState extends State<LaneCheck> {
   String leftLaneText = "";
   String rightLaneText = "";
 
+  String frontSensor = "False";
+
+  final player = AudioPlayer();
+  final musicCache = AudioCache();
+
+  void playLoopedMusic() async {
+    await player.setSourceAsset('warning.mp3');
+    await player.setReleaseMode(ReleaseMode.loop);
+    await player.resume();
+  }
+
+  void stopMusic() {
+    player.stop();
+  }
+
   @override
   void initState(){
     super.initState();
@@ -44,12 +60,21 @@ class _LaneCheckState extends State<LaneCheck> {
       SingleCarUser.instance.carUser = CarUser.fromDataSnapshot(event.snapshot);
       CarUser user = SingleCarUser.instance.carUser;
 
-      print("USER LANE VIOLATION CHANGED");
+      print(user);
+
+
 
       setState(() {
         leftLaneText = user.leftWarning;
         rightLaneText = user.rightWarning;
+        frontSensor = user.frontWarning;
       });
+
+      if(frontSensor == "True"){
+        playLoopedMusic();
+      }else{
+        stopMusic();
+      }
 
     });
   }
@@ -65,48 +90,80 @@ class _LaneCheckState extends State<LaneCheck> {
       color: Colors.white,
     );
 
-    return Padding(
-        padding: EdgeInsets.symmetric(horizontal: size.width * 0.008,),
-        child: Container(
-            padding: EdgeInsets.symmetric(horizontal: size.width * 0.01, vertical: size.width*0.01),
-            margin: EdgeInsets.symmetric(vertical: size.width*0.003),
-            width: size.width * 0.4,
-            height: size.width * 0.3,
-            alignment: Alignment.centerLeft,
-            decoration: const BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.all(Radius.circular(20))
-            ),
-            child: Column(
-              children: [
-                Text("Şerit İhlali", style: _annotationTextStyle),
-                const Divider(
-                  color: Colors.white,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
+    return Column(
+      children: [
 
-                    // LEFT WARNING ICON
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Icon(Icons.warning_amber_outlined, color: leftLaneText == "True" ? Colors.redAccent : Colors.black, size: 40),
-                    ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: size.width * 0.008),
+          child: Container(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+              width: size.width * 0.4,
+              height: size.width * 0.2,
+              alignment: Alignment.topCenter,
+              decoration: const BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(20))
+              ),
+              child: Column(
+                children: [
+                  Text("Şerit İhlali", style: _annotationTextStyle),
+                  const Divider(
+                    color: Colors.white,
+                    height: 4,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
 
-                    // RIGHT WARNING ICON
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      child: Icon(Icons.warning_amber_outlined, color: rightLaneText == "True" ? Colors.redAccent : Colors.black, size: 40),
-                    ),
+                      // LEFT WARNING ICON
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Icon(Icons.warning_amber_outlined, color: leftLaneText == "True" ? Colors.redAccent : Colors.black, size: 40),
+                      ),
 
-                  ],
-                )
-              ],
+                      // RIGHT WARNING ICON
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Icon(Icons.warning_amber_outlined, color: rightLaneText == "True" ? Colors.redAccent : Colors.black, size: 40),
+                      ),
 
-            )
-        )
+                    ],
+                  )
+                ],
+
+
+              )
+          ),
+        ),
+
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: size.width * 0.008),
+          child: Container(
+              padding: EdgeInsets.symmetric(horizontal: size.width * 0.01),
+              margin: EdgeInsets.only(top: 1),
+              width: size.width * 0.4,
+              height: size.width * 0.25,
+              alignment: Alignment.topCenter,
+              decoration: const BoxDecoration(
+                  color: Colors.black,
+                  borderRadius: BorderRadius.all(Radius.circular(10))
+              ),
+
+              child: Column(
+                children: [
+                  Text(frontSensor=="True" ? " Azami Fren Mesafesi Aşıldı" : "Güvenli Mesafe",
+                      style: TextStyle(color: frontSensor == "True" ? Colors.redAccent : Colors.green, fontSize: frontSensor=="True"? 24 : 18, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              )
+          ),
+        ),
+      ],
+
     );
+
 
   }
 
