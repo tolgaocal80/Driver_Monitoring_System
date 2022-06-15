@@ -281,7 +281,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                               ),
                               Container(
                                 width: size.width * 0.46,
-                                height: size.width * 0.59,
+                                height: size.width * 0.55,
                                 decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(
                                     Radius.circular(10),
@@ -317,7 +317,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                           style: GoogleFonts.questrial(
                                             color:
                                             isDarkMode ? Colors.white54 : Colors.black54,
-                                            fontSize: size.height * 0.035,
+                                            fontSize: size.height * 0.03,
                                           ),
                                         ),
                                       ),
@@ -423,7 +423,7 @@ class _WeatherHomePageState extends State<WeatherHomePage> {
                                   padding: EdgeInsets.symmetric(horizontal: size.width * 0.01, vertical: size.width*0.01),
                                   margin: EdgeInsets.symmetric(vertical: size.width*0.003),
                                   width: size.width * 0.5,
-                                  height: size.width * 0.3,
+                                  height: size.width * 0.25,
                                   alignment: Alignment.centerLeft,
                                   decoration: const BoxDecoration(
                                       color: Colors.black,

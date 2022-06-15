@@ -34,6 +34,11 @@ dependencies:
   property_change_notifier: ^0.3.0
   provider: ^6.0.3
 
+  video_player: ^2.4.4
+  flutter_mjpeg: ^2.0.1
+
+  audioplayers: ^1.0.0
+
 dev_dependencies:
 
   flutter_test:
@@ -50,4 +55,6 @@ flutter:
     - lib/assets/animations/go-to-my-location-button.json
     - lib/assets/animations/map-type-button.json
     - lib/assets/animations/
+    - lib/assets/
+    - assets/
 

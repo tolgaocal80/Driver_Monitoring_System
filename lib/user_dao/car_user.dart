@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'package:firebase_database/firebase_database.dart';
 
-
 /*
 
 Araç kullanıcı modeli. Burada bir araç sürücüsü verisinin neler içerdiği görülmektedir.
@@ -22,7 +21,6 @@ ya da mevcut kullanıcı güncellenir.
 
  */
 
-
 class CarUser {
 
    String latitude;
@@ -34,10 +32,14 @@ class CarUser {
    String rightWarning;
    String gpsSpeed;
 
-  CarUser(this.gpsSpeed,this.latitude, this.longitude, this.status, this.time, this.uid, this.leftWarning, this.rightWarning);
+   String frontWarning;
+
+
+  CarUser(this.frontWarning, this.gpsSpeed,this.latitude, this.longitude, this.status, this.time, this.uid, this.leftWarning, this.rightWarning);
 
   CarUser.fromJson(Map<String, dynamic> json)
       : gpsSpeed = json['gpsSpeed'],
+        frontWarning = json['frontWarning'],
         latitude = json['latitude'],
         longitude = json['longitude'],
         status = json['status'],
@@ -48,6 +50,7 @@ class CarUser {
 
   CarUser.fromDataSnapshot(DataSnapshot snapshot)
       : gpsSpeed = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['gpsSpeed'],
+        frontWarning = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['frontWarning'],
         latitude = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['latitude'],
         longitude = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['longitude'],
         status = (snapshot.value as LinkedHashMap<dynamic, dynamic>)['status'],
@@ -65,11 +68,12 @@ class CarUser {
     'uid': uid,
     'leftWarning': leftWarning,
     'rightWarning': rightWarning,
+    'frontWarning': frontWarning
   };
 
    @override
    String toString() {
-     return ('{uid: $uid, status: $status, time: $time, latitude: $latitude, longitude: $longitude, speed: $gpsSpeed, leftWarning: $leftWarning, rightWarning: $rightWarning}');
+     return ('{uid: $uid, status: $status, time: $time, latitude: $latitude, longitude: $longitude, speed: $gpsSpeed, leftWarning: $leftWarning, rightWarning: $rightWarning, frontWarning: $frontWarning}');
    }
 
 }
