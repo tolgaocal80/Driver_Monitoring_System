@@ -14,7 +14,6 @@ anlık olarak uygulamaya yansır. Bu, şerit değiştirirken yaşanabilecek kaza
 
 Uygulama ekranında sağ ikaz ve sol ikaz olarak görünür.
 
-
  */
 
 class LaneCheck extends StatefulWidget {

@@ -38,6 +38,7 @@ dependencies:
   flutter_mjpeg: ^2.0.1
 
   audioplayers: ^1.0.0
+  cloud_firestore: ^3.1.17
 
 dev_dependencies:
 

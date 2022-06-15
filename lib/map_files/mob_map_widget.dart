@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:driver_monitoring_system/pythonComponents/single_caruser.dart';
 import 'package:driver_monitoring_system/user_dao/car_user.dart';
 import 'package:driver_monitoring_system/weather/common/date_formatter.dart';
@@ -135,6 +136,9 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     return marker;
   }
 
+  // Create a CollectionReference called users that references the firestore collection
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
+
   @override
   void initState() {
     super.initState();
@@ -143,6 +147,8 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
     _getCarLocationAnimationController = AnimationController(vsync: this)..value = 0;
 
     Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high).then((value) => position = value);
+
+
 
     // Veritabanı değişikliklerini sürekli olarak dinler
     reference.child("users/$userId").onValue.listen((DatabaseEvent event) {
@@ -165,6 +171,7 @@ class MobileMapState extends State<MobileMap> with TickerProviderStateMixin{
         _markers.add(createCarLocationMarker(user));
       });
 
+      users.doc(userId).collection(DateTime.now().toString()).add(user.toJson());
     });
 
   }
